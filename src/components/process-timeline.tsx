@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, FileText, MousePointerClick } from "lucide-react";
+import { Check, FileText, Info, MousePointerClick } from "lucide-react";
 import { decisionHref } from "@/lib/processes";
 import type { EventStatus, Process, ProcessEvent } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -88,10 +88,7 @@ function EventText({ event, isDecision, selected }: { event: ProcessEvent; isDec
         {event.label}
         {event.note && <span className="block">({event.note})</span>}
       </p>
-      <p className="mt-0.5 text-[0.74rem] leading-snug text-muted-foreground italic [overflow-wrap:anywhere]">
-        <span className="sr-only">Nome técnico: </span>
-        {event.technicalName}
-      </p>
+      <span className="sr-only">Nome técnico: {event.technicalName}. </span>
       <p className={cn("mt-0.5 text-[0.8rem] tabular-nums", isCurrent ? "font-semibold text-foreground" : "text-muted-foreground")}>
         {event.date ?? (
           <>
@@ -154,12 +151,15 @@ export function ProcessTimeline({ process, selectedDecisionId }: ProcessTimeline
                 <Link
                   href={decisionHref(process, event.decisionId)}
                   aria-current={selected ? "page" : undefined}
+                  title={`Nome técnico: ${event.technicalName}`}
                   className={cn(layout, "group rounded-lg")}
                 >
                   {content}
                 </Link>
               ) : (
-                <div className={layout}>{content}</div>
+                <div title={`Nome técnico: ${event.technicalName}`} className={cn(layout, "cursor-help")}>
+                  {content}
+                </div>
               )}
             </li>
           );
@@ -173,6 +173,10 @@ export function ProcessTimeline({ process, selectedDecisionId }: ProcessTimeline
             Toque em uma decisão do juiz ou do tribunal para ver a explicação dela.
           </p>
         )}
+        <p className="flex items-center gap-1.5">
+          <Info className="size-3.5 shrink-0 text-brand" aria-hidden="true" />
+          Passe o mouse sobre uma etapa para ver o nome técnico.
+        </p>
         <p className="flex items-center gap-1.5">
           <span aria-hidden="true" className="inline-block w-4 shrink-0 border-t-2 border-dashed border-slate-300" />
           Etapas futuras são possibilidades e podem não acontecer.

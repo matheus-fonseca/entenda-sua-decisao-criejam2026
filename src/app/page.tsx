@@ -26,7 +26,7 @@ export default function LoginPage() {
           </h1>
           <p className="mt-3 max-w-xl text-lg leading-relaxed text-foreground/85">
             Explicações de sentenças e acórdãos em linguagem simples, para você saber o que foi decidido no seu
-            processo e o que pode acontecer depois.
+            processo.
           </p>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
             {features.map(({ icon: Icon, title, text }) => (
