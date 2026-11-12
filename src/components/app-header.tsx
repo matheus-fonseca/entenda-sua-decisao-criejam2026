@@ -17,7 +17,7 @@ export function AppHeader() {
           <Link
             href="/processos"
             className="min-w-0 rounded-md"
-            aria-label="Jus.br — Entenda a decisão — Conselho Nacional de Justiça. Ir para Meus processos"
+            aria-label="Explica.AI — Jus.br. Ir para Meus processos"
           >
             <BrandLockup />
           </Link>

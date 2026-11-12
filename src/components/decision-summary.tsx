@@ -47,7 +47,7 @@ export function DecisionSummary({ decision, isLatest }: { decision: Decision; is
     >
       <span
         className={cn(
-          "flex size-14 shrink-0 items-center justify-center rounded-full ring-1 sm:size-[4.5rem]",
+          "hidden size-14 shrink-0 items-center justify-center rounded-full ring-1 sm:flex sm:size-[4.5rem]",
           tone.iconWrap,
         )}
       >
@@ -55,7 +55,7 @@ export function DecisionSummary({ decision, isLatest }: { decision: Decision; is
       </span>
       <span aria-hidden="true" className={cn("hidden w-px self-stretch sm:block", tone.divider)} />
       <div className="min-w-0">
-        <p className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+        <p className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-muted-foreground sm:text-xs sm:tracking-wide sm:uppercase">
           <span
             className={cn(
               "rounded-full px-2 py-0.5 text-[0.68rem] tracking-normal normal-case ring-1",

@@ -12,6 +12,7 @@ import {
   decisionHref,
   getLatestDecision,
   nextSectionTitle,
+  NEXT_STEPS_DISCLAIMER,
   originalDocumentHref,
 } from "@/lib/processes";
 import type { Decision, Process } from "@/lib/types";
@@ -78,7 +79,17 @@ function buildSections(process: Process, decision: Decision, isLatest: boolean):
       id: "o-que-pode-acontecer",
       title: nextSectionTitle(isLatest),
       icon: isLatest ? CalendarClock : History,
-      content: <SentenceList sentences={decision.explanation.whatNext} />,
+      content: (
+        <>
+          <SentenceList sentences={decision.explanation.whatNext} />
+          {isLatest && (
+            <p className="mt-3 flex gap-2 rounded-lg bg-muted px-3 py-2 text-sm leading-snug text-muted-foreground">
+              <Info className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+              {NEXT_STEPS_DISCLAIMER}
+            </p>
+          )}
+        </>
+      ),
     },
   ];
 }

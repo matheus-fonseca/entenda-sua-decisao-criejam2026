@@ -32,7 +32,7 @@ const messages: Record<SpeechState, string> = {
 };
 
 const controlButton =
-  "inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border bg-white px-5 font-heading text-[1.1rem] font-bold transition-all duration-150 hover:-translate-y-px hover:shadow-sm active:translate-y-0 sm:w-auto";
+  "inline-flex h-12 items-center justify-center gap-2.5 rounded-xl border bg-white px-5 font-heading text-[1.1rem] font-bold transition-all duration-150 hover:-translate-y-px hover:shadow-sm active:translate-y-0 max-sm:flex-1 max-sm:basis-36 max-sm:px-3";
 
 export function AccessibilityControls({ text }: { text: string }) {
   const [state, setState] = useState<SpeechState>("idle");
@@ -103,7 +103,7 @@ export function AccessibilityControls({ text }: { text: string }) {
       <h2 id="recursos-acessibilidade" className="sr-only">
         Ouvir ou assistir à explicação
       </h2>
-      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={speaking ? stop : play}
@@ -123,7 +123,9 @@ export function AccessibilityControls({ text }: { text: string }) {
           ) : (
             <>
               <Volume2 className="size-6" aria-hidden="true" />
-              Ouvir explicação
+              <span>
+                Ouvir<span className="max-sm:sr-only"> explicação</span>
+              </span>
             </>
           )}
         </button>

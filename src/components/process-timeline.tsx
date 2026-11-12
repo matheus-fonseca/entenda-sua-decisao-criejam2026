@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Check, FileText, Info, MousePointerClick } from "lucide-react";
+import { MobileDisclosure } from "@/components/mobile-disclosure";
 import { decisionHref } from "@/lib/processes";
 import type { EventStatus, Process, ProcessEvent } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -108,6 +109,49 @@ function EventText({ event, isDecision, selected }: { event: ProcessEvent; isDec
   );
 }
 
+const miniDot: Record<EventStatus, string> = {
+  concluido: "bg-success",
+  atual: "bg-brand ring-2 ring-brand/30",
+  futuro: "border-[1.5px] border-dashed border-slate-400 bg-white",
+};
+
+/** Resumo do andamento no celular: mini barra decorativa + etapa atual. */
+function MobileSummary({ events }: { events: ProcessEvent[] }) {
+  const current =
+    events.find((e) => e.status === "atual") ?? events.findLast((e) => e.status === "concluido") ?? events[0];
+
+  return (
+    <div className="flex flex-col gap-2 md:hidden">
+      <div aria-hidden="true" className="flex items-center px-1">
+        {events.map((event, index) => {
+          const next = events[index + 1];
+          return (
+            <span key={event.id} className={cn("flex items-center", next && "flex-1")}>
+              <span className={cn("size-3 shrink-0 rounded-full", miniDot[event.status])} />
+              {next && (
+                <span
+                  className={cn(
+                    "mx-0.5 flex-1",
+                    next.status === "futuro" ? "border-t-2 border-dashed border-slate-300" : "h-0.5 bg-success",
+                  )}
+                />
+              )}
+            </span>
+          );
+        })}
+      </div>
+      <p className="text-[0.95rem] leading-snug text-foreground">
+        <span className="text-muted-foreground">Etapa atual: </span>
+        <strong className="font-semibold text-brand-strong">
+          {current.label}
+          {current.note && ` (${current.note})`}
+        </strong>
+        {current.date && <span className="tabular-nums text-muted-foreground"> · {current.date}</span>}
+      </p>
+    </div>
+  );
+}
+
 interface ProcessTimelineProps {
   process: Process;
   /** Decisão cuja explicação está aberta na página. */
@@ -124,64 +168,72 @@ export function ProcessTimeline({ process, selectedDecisionId }: ProcessTimeline
         Andamento do processo
       </h2>
 
-      <ol
-        className="grid grid-cols-1 xl:[grid-template-columns:repeat(var(--steps),minmax(0,1fr))]"
-        style={{ "--steps": events.length } as React.CSSProperties}
+      <MobileSummary events={events} />
+
+      <MobileDisclosure
+        openLabel={`Ver todas as etapas (${events.length})`}
+        closeLabel="Ocultar etapas"
+        contentClassName="flex flex-col gap-3"
       >
-        {events.map((event, index) => {
-          const next = events[index + 1];
-          const isDecision = Boolean(event.decisionId);
-          const selected = event.decisionId === selectedDecisionId;
-          const content = (
-            <>
-              <Marker status={event.status} selected={selected} />
-              <EventText event={event} isDecision={isDecision} selected={selected} />
-            </>
-          );
-          const layout = "relative flex gap-3 xl:flex-col xl:items-center xl:gap-2 xl:text-center";
+        <ol
+          className="grid grid-cols-1 xl:[grid-template-columns:repeat(var(--steps),minmax(0,1fr))]"
+          style={{ "--steps": events.length } as React.CSSProperties}
+        >
+          {events.map((event, index) => {
+            const next = events[index + 1];
+            const isDecision = Boolean(event.decisionId);
+            const selected = event.decisionId === selectedDecisionId;
+            const content = (
+              <>
+                <Marker status={event.status} selected={selected} />
+                <EventText event={event} isDecision={isDecision} selected={selected} />
+              </>
+            );
+            const layout = "relative flex gap-3 xl:flex-col xl:items-center xl:gap-2 xl:text-center";
 
-          return (
-            <li
-              key={event.id}
-              aria-current={event.status === "atual" ? "step" : undefined}
-              className="relative pb-5 last:pb-0 xl:px-0.5 xl:pb-0"
-            >
-              {next && <Connector next={next} />}
-              {isDecision && event.decisionId ? (
-                <Link
-                  href={decisionHref(process, event.decisionId)}
-                  aria-current={selected ? "page" : undefined}
-                  title={`Nome técnico: ${event.technicalName}`}
-                  className={cn(layout, "group rounded-lg")}
-                >
-                  {content}
-                </Link>
-              ) : (
-                // Etapas futuras não mostram dica com o nome técnico.
-                <div
-                  title={event.status === "futuro" ? undefined : `Nome técnico: ${event.technicalName}`}
-                  className={cn(layout, event.status !== "futuro" && "cursor-help")}
-                >
-                  {content}
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ol>
+            return (
+              <li
+                key={event.id}
+                aria-current={event.status === "atual" ? "step" : undefined}
+                className="relative pb-5 last:pb-0 xl:px-0.5 xl:pb-0"
+              >
+                {next && <Connector next={next} />}
+                {isDecision && event.decisionId ? (
+                  <Link
+                    href={decisionHref(process, event.decisionId)}
+                    aria-current={selected ? "page" : undefined}
+                    title={`Nome técnico: ${event.technicalName}`}
+                    className={cn(layout, "group rounded-lg")}
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  // Etapas futuras não mostram dica com o nome técnico.
+                  <div
+                    title={event.status === "futuro" ? undefined : `Nome técnico: ${event.technicalName}`}
+                    className={cn(layout, event.status !== "futuro" && "cursor-help")}
+                  >
+                    {content}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
 
-      <div className="flex flex-col gap-1 text-xs text-muted-foreground xl:flex-row xl:justify-center xl:gap-5">
-        {hasDecisionLinks && (
-          <p className="flex items-center gap-1.5">
-            <MousePointerClick className="size-3.5 shrink-0 text-brand" aria-hidden="true" />
-            Toque em uma decisão do juiz ou do tribunal para ver a explicação dela.
+        <div className="flex flex-col gap-1 text-xs text-muted-foreground xl:flex-row xl:justify-center xl:gap-5">
+          {hasDecisionLinks && (
+            <p className="flex items-center gap-1.5">
+              <MousePointerClick className="size-3.5 shrink-0 text-brand" aria-hidden="true" />
+              Toque em uma decisão do juiz ou do tribunal para ver a explicação dela.
+            </p>
+          )}
+          <p className="flex items-center gap-1.5 pointer-coarse:hidden">
+            <Info className="size-3.5 shrink-0 text-brand" aria-hidden="true" />
+            Passe o mouse sobre uma etapa para ver o nome técnico.
           </p>
-        )}
-        <p className="flex items-center gap-1.5">
-          <Info className="size-3.5 shrink-0 text-brand" aria-hidden="true" />
-          Passe o mouse sobre uma etapa para ver o nome técnico.
-        </p>
-      </div>
+        </div>
+      </MobileDisclosure>
     </section>
   );
 }

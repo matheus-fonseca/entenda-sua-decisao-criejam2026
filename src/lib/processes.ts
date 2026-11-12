@@ -77,6 +77,10 @@ export function originalDocumentHref(process: Process, decisionId: string): stri
   return `/processos/${process.id}/decisoes/${decisionId}/original`;
 }
 
+/** Aviso fixo dos próximos passos: são possibilidades, a ferramenta não prevê o resultado. */
+export const NEXT_STEPS_DISCLAIMER =
+  "Estas são possibilidades, não previsões. A ferramenta não decide nem garante o que vai acontecer no processo.";
+
 /** Título da segunda seção: muda quando a decisão já foi superada por outra. */
 export function nextSectionTitle(isLatest: boolean): string {
   return isLatest ? "O que pode acontecer agora?" : "O que aconteceu depois?";
@@ -95,6 +99,7 @@ export function buildSpokenExplanation(process: Process, decision: Decision): st
   if (decision.explanation) {
     parts.push(`Por que ${decision.decidedBy} decidiu assim?`, ...decision.explanation.why);
     parts.push(nextSectionTitle(isLatest), ...decision.explanation.whatNext);
+    if (isLatest) parts.push(NEXT_STEPS_DISCLAIMER);
   } else {
     parts.push(
       "Recomendamos ler a decisão original e, se precisar, falar com o Balcão Virtual ou com quem representa você no processo.",

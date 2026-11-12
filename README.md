@@ -29,15 +29,20 @@ A rota define o processo e a decisão selecionados, então cada caso tem um link
 
 ## Cenários
 
-| Processo | Decisões | Situação atual |
-| --- | --- | --- |
-| `reclamacao-trabalhista` (TRT10) | Sentença: horas extras negadas (cinza). Acórdão: recurso aceito em parte (verde) | Acórdão publicado |
-| `beneficio-previdenciario` (TRF1) | Sentença parcialmente favorável (verde) | Pedido de esclarecimento (embargos de declaração) em análise |
-| `acao-civel` (TJPE) | Sentença aceita em parte (verde). Acórdão com interpretação insegura (âmbar, sem síntese) | Acórdão publicado, sem explicação segura |
+A ordem segue o roteiro da demonstração: do caso mais simples ao mais complexo, e cada exemplo mostra uma capacidade do produto.
+
+| # | Processo (título na lista) | Decisões | Situação atual | O que mostra |
+| --- | --- | --- | --- | --- |
+| 1 | `rescisao-trabalhista` (TRT2) — Rescisão do contrato | Sentença: verbas rescisórias aceitas, dano moral negado (verde) | Sentença publicada, ainda cabe recurso | Entender uma decisão: resultado, motivo, próximo passo, ouvir/avatar |
+| 2 | `reclamacao-trabalhista` (TRT10) — Horas extras | Sentença: horas extras negadas (cinza). Acórdão: recurso aceito em parte (verde) | Acórdão publicado | O resultado mudou: navegar entre as duas decisões |
+| 3 | `beneficio-previdenciario` (TRF1) — Benefício do INSS | Sentença parcialmente favorável (verde) | Pedido de esclarecimento (embargos de declaração) em análise | Etapa intermediária: o resultado ainda pode mudar |
+| 4 | `acao-civel` (TJPE) — Atraso na entrega do imóvel | Sentença aceita em parte (verde). Acórdão com interpretação insegura (âmbar, sem síntese) | Acórdão publicado, sem explicação segura | Saber quando não explicar e encaminhar ao atendimento |
+
+Os textos seguem um limite para caber na demo: manchete curta, no máximo 3 frases por seção e o aviso "pode mudar" sempre que o resultado não for definitivo.
 
 Os documentos originais fictícios citam fundamentos jurídicos reais para dar verossimilhança. Os principais são:
 
-- **Trabalhista:** arts. 74, § 2º, 791-A, 818 e 895 da CLT, Súmulas 126 e 338 do TST e ADI 5766.
+- **Trabalhista:** arts. 74, § 2º, 464, 477, §§ 6º e 8º, 790, 791-A, 818, 852-I e 895 da CLT, art. 18, § 1º, da Lei 8.036/90, Súmulas 126 e 338 do TST e ADI 5766.
 - **Previdenciário:** arts. 25, 42, 59 e 60 da Lei 8.213/91, arts. 85, 496 e 1.022 a 1.026 do CPC, Súmula 111 do STJ e STF RE 631.240.
 - **Cível:** CDC, art. 43-A da Lei 4.591/64, arts. 402 e 405 do CC, arts. 85, 86 e 334 do CPC e Súmula 43 do STJ.
 

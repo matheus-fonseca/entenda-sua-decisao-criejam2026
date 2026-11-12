@@ -25,7 +25,9 @@ export function AvatarDemoModal({ text, triggerClassName }: AvatarDemoModalProps
     <Dialog>
       <DialogTrigger className={triggerClassName}>
         <AvatarIllustration className="size-8" />
-        <span>Assistir com avatar</span>
+        <span>
+          Assistir<span className="max-sm:sr-only"> com avatar</span>
+        </span>
       </DialogTrigger>
       <DialogContent className="max-h-[90dvh] gap-5 overflow-y-auto p-5 sm:max-w-lg sm:p-6">
         <DialogHeader className="gap-2 text-left">

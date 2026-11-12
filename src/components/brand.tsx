@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /** Faixas decorativas no canto do cabeçalho (inspiração visual, não é logotipo oficial). */
@@ -16,34 +17,26 @@ export function BrandSwoosh({ className }: { className?: string }) {
   );
 }
 
-/** Identidade textual Jus.br | Entenda a decisão | CNJ. */
-export function BrandLockup({ compact = false }: { compact?: boolean }) {
+/** Proporção do SVG vetorizado a partir de references/logo-referencia.jpeg (832 × 171). */
+const LOGO_RATIO = 832 / 171;
+
+/** Identidade do produto para o cabeçalho azul: logo Explica.AI em branco | Jus.br. */
+export function BrandLockup() {
   return (
-    <div className="flex min-w-0 items-center gap-2 text-white sm:gap-4">
-      <span className="font-heading text-[1.3rem] leading-none font-bold tracking-tight sm:text-[1.55rem]">
+    <div className="flex min-w-0 items-center gap-3 text-white sm:gap-4">
+      <Image
+        src="/explica-ai-branco.svg"
+        alt="Explica.AI"
+        width={Math.round(36 * LOGO_RATIO)}
+        height={36}
+        priority
+        unoptimized
+        className="h-7 w-auto shrink-0 sm:h-9"
+      />
+      <span aria-hidden="true" className="hidden h-6 w-px shrink-0 bg-white/40 sm:block" />
+      <span className="font-heading hidden text-[1.3rem] leading-none font-bold tracking-tight sm:inline sm:text-[1.55rem]">
         Jus.br
       </span>
-      <span aria-hidden="true" className="h-6 w-px shrink-0 bg-white/40" />
-      <span className="font-heading truncate text-[1rem] leading-none font-medium sm:text-xl">
-        Entenda a decisão
-      </span>
-      {!compact && (
-        <>
-          <span aria-hidden="true" className="hidden h-6 w-px bg-white/40 lg:block" />
-          <span className="hidden items-center gap-2 lg:flex">
-            <span className="font-heading text-[1.6rem] leading-none font-bold tracking-tighter">
-              CNJ
-            </span>
-            <span className="text-[0.55rem] leading-[1.05] font-semibold tracking-wide uppercase">
-              Conselho
-              <br />
-              Nacional
-              <br />
-              de Justiça
-            </span>
-          </span>
-        </>
-      )}
     </div>
   );
 }

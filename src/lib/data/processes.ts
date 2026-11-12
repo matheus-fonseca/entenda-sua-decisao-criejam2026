@@ -9,7 +9,116 @@ import type { Process } from "@/lib/types";
  */
 export const processes: Process[] = [
   // ─────────────────────────────────────────────────────────────
-  // A) TRABALHISTA — sentença (improcedente) e acórdão (reforma parcial)
+  // 1) TRABALHISTA — só sentença (parcialmente procedente). Exemplo mais simples da demo.
+  //    Rito sumaríssimo (arts. 852-A e seguintes da CLT), audiência una.
+  //    Verbas rescisórias: art. 477, §§ 6º e 8º, CLT (prazo e multa). Prova do pagamento:
+  //    art. 464 CLT; ônus do empregador quanto ao fato extintivo: art. 818, II, CLT.
+  //    Multa de 40% do FGTS: art. 18, § 1º, da Lei 8.036/90.
+  // ─────────────────────────────────────────────────────────────
+  {
+    id: "rescisao-trabalhista",
+    number: "0001010-22.2025.5.02.0031",
+    area: "trabalhista",
+    title: "Rescisão do contrato",
+    court: "TRT da 10ª Região (Pernambuco)",
+    courtShort: "TRT10",
+    className: "Reclamação Trabalhista (rito sumaríssimo)",
+    status: "decisao",
+    statusLabel: "Decisão",
+    parties: [
+      { name: "Maria Souza", role: "autor", roleLabel: "Reclamante" },
+      { name: "Comércio Beta Ltda.", role: "reu", roleLabel: "Reclamada" },
+    ],
+    events: [
+      {
+        id: "inicio",
+        label: "Processo iniciado",
+        technicalName: "Petição inicial",
+        date: "10/02/2025",
+        status: "concluido",
+        description: "Você entrou com a ação na Justiça do Trabalho.",
+      },
+      {
+        id: "audiencia",
+        label: "Audiência",
+        technicalName: "Audiência una",
+        date: "14/04/2025",
+        status: "concluido",
+        description: "A empresa apresentou a defesa e o juiz ouviu as partes.",
+      },
+      {
+        id: "sentenca",
+        label: "Decisão do juiz",
+        technicalName: "Sentença",
+        date: "23/06/2025",
+        status: "atual",
+        description: "O juiz decidiu os pedidos do processo.",
+        decisionId: "sentenca",
+      },
+      {
+        id: "proximas",
+        label: "Próximas etapas",
+        technicalName: "Recurso ordinário ou liquidação",
+        status: "futuro",
+        description: "Pode haver recurso ao tribunal ou o cálculo dos valores. Nada disso é automático.",
+      },
+    ],
+    decisions: [
+      {
+        id: "sentenca",
+        documentType: "Sentença",
+        date: "23/06/2025",
+        decidedBy: "o juiz",
+        outcome: "parcial",
+        headline: "O juiz mandou a empresa pagar sua rescisão.",
+        subheadline: "A empresa deve pagar o que faltava, com multa pelo atraso. Ainda cabe recurso, então o resultado pode mudar.",
+        explanation: {
+          why: [
+            "Você foi dispensada sem justa causa e não recebeu a rescisão.",
+            "A empresa não provou que pagou. Por isso, o juiz mandou pagar os valores e a multa por atraso.",
+            "O pedido de indenização por dano moral não foi aceito.",
+          ],
+          whatNext: [
+            "Você ou a empresa ainda podem recorrer ao tribunal. Por isso, o resultado pode mudar.",
+            "Se ninguém recorrer, os valores serão calculados em uma etapa própria do processo.",
+            "Não é possível informar aqui quando ou quanto será pago.",
+          ],
+        },
+        original: {
+          heading: "SENTENÇA",
+          sections: [
+            {
+              title: "I – RELATÓRIO",
+              paragraphs: [
+                "Dispensado o relatório, nos termos do art. 852-I da CLT (rito sumaríssimo). MARIA SOUZA ajuizou reclamação trabalhista em face de COMÉRCIO BETA LTDA., postulando o pagamento das verbas rescisórias decorrentes da dispensa sem justa causa, da multa do art. 477, § 8º, da CLT, da indenização de 40% do FGTS e de compensação por danos morais.",
+              ],
+            },
+            {
+              title: "II – FUNDAMENTAÇÃO",
+              paragraphs: [
+                "Verbas rescisórias. Incontroversa a dispensa sem justa causa. A reclamada alega ter quitado as verbas rescisórias, mas não apresenta recibo de pagamento, prova que lhe incumbia (arts. 464 e 818, II, da CLT). Devidos o saldo de salário, o aviso prévio indenizado, as férias proporcionais acrescidas de um terço e o 13º salário proporcional.",
+                "Multa do art. 477, § 8º, da CLT. Não observado o prazo do § 6º do mesmo artigo, é devida a multa equivalente a um salário da reclamante.",
+                "FGTS. Devida a indenização de 40% sobre os depósitos do FGTS (art. 18, § 1º, da Lei 8.036/90).",
+                "Danos morais. O atraso no pagamento das verbas rescisórias, por si só, não configura ofensa a direito da personalidade, ausente prova de repercussão que ultrapasse o inadimplemento. Improcedente.",
+                "Justiça gratuita. Deferida, nos termos do art. 790, § 3º, da CLT.",
+              ],
+            },
+            {
+              title: "III – DISPOSITIVO",
+              paragraphs: [
+                "Ante o exposto, julgo PARCIALMENTE PROCEDENTES os pedidos formulados por MARIA SOUZA em face de COMÉRCIO BETA LTDA. para condenar a reclamada ao pagamento de saldo de salário, aviso prévio indenizado, férias proporcionais acrescidas de um terço, 13º salário proporcional, multa do art. 477, § 8º, da CLT e indenização de 40% do FGTS, nos termos da fundamentação, e julgo IMPROCEDENTE o pedido de compensação por danos morais.",
+                "Valores a serem apurados em liquidação. Honorários advocatícios de sucumbência recíproca, nos termos do art. 791-A da CLT, observada a ADI 5766 quanto à reclamante. Custas pela reclamada. Intimem-se.",
+              ],
+            },
+          ],
+          signature: "Juiz(a) do Trabalho — Vara do Trabalho fictícia de São Paulo (documento demonstrativo)",
+        },
+      },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────────
+  // 2) TRABALHISTA — sentença (improcedente) e acórdão (reforma parcial)
   //    Rito ordinário. RO: art. 895, I, CLT (8 dias úteis).
   //    Ônus da prova: art. 818, I, CLT. Controles de jornada: art. 74, §2º, CLT
   //    e Súmula 338, I, TST. Recurso de revista não reexamina provas (Súmula 126, TST).
@@ -18,12 +127,12 @@ export const processes: Process[] = [
     id: "reclamacao-trabalhista",
     number: "0001234-56.2024.5.10.0001",
     area: "trabalhista",
-    title: "Reclamação Trabalhista",
-    court: "TRT da 10ª Região",
+    title: "Horas extras",
+    court: "TRT da 10ª Região (Pernambuco)",
     courtShort: "TRT10",
     className: "Reclamação Trabalhista",
-    status: "em-andamento",
-    statusLabel: "Em andamento",
+    status: "decisao",
+    statusLabel: "Decisão",
     parties: [
       { name: "Maria Souza", role: "autor", roleLabel: "Reclamante" },
       { name: "Empresa Alfa Serviços Ltda.", role: "reu", roleLabel: "Reclamada" },
@@ -94,20 +203,17 @@ export const processes: Process[] = [
         date: "15/07/2024",
         decidedBy: "o juiz",
         outcome: "negado",
-        headline: "O juiz não aceitou seu pedido de horas extras na sentença.",
+        headline: "O juiz não aceitou seu pedido de horas extras.",
         subheadline: "Ele entendeu que faltaram provas de que você trabalhou além do horário.",
         explanation: {
           why: [
             "Você pediu o pagamento de horas extras.",
-            "Quem pede na Justiça precisa provar o que diz. Aqui, era preciso provar que você trabalhou além do horário.",
-            "O juiz considerou válidos os registros de ponto apresentados pela empresa.",
-            "Para o juiz, o depoimento da testemunha não foi suficiente para mostrar o contrário.",
-            "Isso não quer dizer que alguém mentiu. Quer dizer que as provas não convenceram o juiz.",
+            "A empresa apresentou registros de ponto, e o juiz os considerou válidos.",
+            "Para o juiz, a testemunha não foi suficiente para provar o contrário.",
           ],
           whatNext: [
-            "Depois desta sentença, você apresentou um recurso ao tribunal.",
-            "O tribunal já julgou o recurso e mudou parte do resultado.",
-            "Veja a decisão mais recente para entender a situação atual.",
+            "Você recorreu ao tribunal.",
+            "O tribunal mudou parte deste resultado. Veja a decisão mais recente.",
           ],
         },
         original: {
@@ -146,22 +252,18 @@ export const processes: Process[] = [
         date: "18/03/2025",
         decidedBy: "o tribunal",
         outcome: "parcial",
-        headline: "O tribunal aceitou parte do seu recurso.",
-        subheadline: "Ele reconheceu horas extras em parte do período. Isso muda parte do resultado da decisão do juiz.",
+        headline: "O tribunal mudou parte da decisão do juiz.",
+        subheadline: "Agora você tem direito a horas extras em parte do período. Ainda pode haver recurso, então o resultado pode mudar.",
         explanation: {
           why: [
-            "Você recorreu da sentença que não aceitou o pedido de horas extras.",
-            "O tribunal analisou de novo as provas do processo.",
-            "Empresas com mais de 20 empregados precisam registrar o horário de trabalho. Em parte do período, a empresa não apresentou esses registros.",
-            "Quando isso acontece, a Justiça do Trabalho considera verdadeiro o horário informado pelo trabalhador, se não houver prova em contrário. No seu caso, a testemunha confirmou esse horário.",
-            "No restante do período, havia registros de ponto válidos. Nessa parte, o tribunal manteve o que o juiz decidiu.",
+            "Em parte do período, a empresa não apresentou os registros de ponto.",
+            "Sem esses registros, vale o horário que você informou, confirmado pela testemunha.",
+            "No período com registros válidos, o tribunal manteve a decisão do juiz.",
           ],
           whatNext: [
-            "O tribunal reconheceu seu direito a horas extras do período sem registros de ponto.",
-            "Ainda pode haver recurso ao Tribunal Superior do Trabalho (TST). Ele só é aceito em casos específicos e não analisa as provas de novo.",
-            "Se a decisão for mantida, os valores serão calculados em uma etapa própria do processo, chamada liquidação.",
+            "Ainda pode haver recurso ao TST, mas só em casos específicos.",
+            "Se a decisão for mantida, os valores serão calculados em uma etapa própria.",
             "Não é possível informar aqui quando ou quanto será pago.",
-            "Se tiver dúvidas, fale com quem representa você no processo ou com o Balcão Virtual.",
           ],
         },
         original: {
@@ -201,7 +303,7 @@ export const processes: Process[] = [
   },
 
   // ─────────────────────────────────────────────────────────────
-  // B) PREVIDENCIÁRIO — sentença parcialmente procedente + embargos em análise
+  // 3) PREVIDENCIÁRIO — sentença parcialmente procedente + embargos em análise
   //    Interesse de agir: prévio requerimento administrativo (STF, RE 631.240).
   //    Benefícios: arts. 42 e 59 a 63 da Lei 8.213/91 (nomes da EC 103/2019).
   //    Embargos de declaração: arts. 1.022 a 1.026 do CPC (interrompem o prazo recursal).
@@ -210,7 +312,7 @@ export const processes: Process[] = [
     id: "beneficio-previdenciario",
     number: "1005678-90.2023.4.01.3400",
     area: "previdenciario",
-    title: "Benefício Previdenciário",
+    title: "Benefício do INSS",
     court: "TRF da 1ª Região",
     courtShort: "TRF1",
     className: "Procedimento Comum Cível",
@@ -279,23 +381,18 @@ export const processes: Process[] = [
         date: "18/09/2024",
         decidedBy: "o juiz",
         outcome: "parcial",
-        headline: "O juiz aceitou parte do seu pedido.",
-        subheadline:
-          "Ele reconheceu seu direito ao auxílio por incapacidade temporária, mas não à aposentadoria. A decisão ainda está sendo discutida e pode mudar.",
+        headline: "O juiz concedeu o auxílio, mas não a aposentadoria.",
+        subheadline: "Foi pedido um esclarecimento ao juiz sobre a sentença. Por isso, o resultado ainda pode mudar.",
         explanation: {
           why: [
-            "Antes do processo, o INSS negou seu pedido de benefício.",
-            "Na Justiça, você pediu o auxílio por incapacidade temporária e, se fosse o caso, a aposentadoria por incapacidade permanente.",
-            "A perícia médica indicou que você ficou sem condições de trabalhar por um período, mas que pode se recuperar com tratamento.",
-            "Por isso, o juiz reconheceu seu direito ao auxílio por incapacidade temporária, por um tempo definido na sentença.",
-            "A aposentadoria exige incapacidade permanente. Como a perícia não indicou isso, esse pedido não foi aceito.",
+            "A perícia mostrou que você ficou sem condições de trabalhar por um tempo, mas pode se recuperar.",
+            "Por isso, o juiz concedeu o auxílio por incapacidade temporária.",
+            "A aposentadoria exige incapacidade permanente, que a perícia não confirmou.",
           ],
           whatNext: [
-            "Foi feito um pedido de esclarecimento sobre a sentença. O nome técnico é “embargos de declaração”.",
-            "O juiz vai analisar esse pedido. A sentença pode ser mantida ou ajustada.",
-            "Depois disso, você e o INSS ainda poderão pedir que o tribunal reveja a decisão. Isso se chama recurso.",
-            "Esta decisão não significa pagamento imediato. Os valores atrasados, se mantidos, são pagos em uma etapa própria do processo.",
-            "Não é possível informar aqui quando ou quanto será pago.",
+            "O juiz vai responder ao pedido de esclarecimento e pode manter ou ajustar a sentença.",
+            "Depois, você e o INSS ainda podem recorrer ao tribunal.",
+            "Os valores atrasados são pagos em etapa própria. Não é possível informar aqui quando.",
           ],
         },
         original: {
@@ -331,7 +428,7 @@ export const processes: Process[] = [
   },
 
   // ─────────────────────────────────────────────────────────────
-  // C) CÍVEL — sentença parcialmente procedente + acórdão com interpretação insegura
+  // 4) CÍVEL — sentença parcialmente procedente + acórdão com interpretação insegura
   //    Atraso na entrega de imóvel (relação de consumo). Audiência de conciliação:
   //    art. 334 do CPC. Aluguéis pagos = danos emergentes (art. 402 do CC).
   //    Juros desde a citação (art. 405 do CC); correção desde o desembolso (Súmula 43 do STJ).
@@ -341,8 +438,8 @@ export const processes: Process[] = [
     id: "acao-civel",
     number: "0012345-87.2023.8.17.2001",
     area: "civel",
-    title: "Ação Cível",
-    court: "TJPE",
+    title: "Atraso na entrega do imóvel",
+    court: "Tribunal de Justiça de Pernambuco",
     courtShort: "TJPE",
     className: "Procedimento Comum Cível",
     status: "decisao",
@@ -422,15 +519,13 @@ export const processes: Process[] = [
           "Ele reconheceu que houve atraso na entrega do imóvel. O pedido de indenização por dano moral não foi aceito.",
         explanation: {
           why: [
-            "Você pediu que a construtora pagasse pelos prejuízos do atraso na entrega do imóvel e uma indenização por dano moral.",
-            "O contrato permitia um atraso de até 180 dias. O juiz considerou que o imóvel foi entregue depois até desse prazo extra.",
-            "Por isso, mandou a construtora devolver o que você gastou com aluguel durante o atraso.",
-            "Para o juiz, o atraso, sozinho, não causou dano moral. Você não mostrou um sofrimento além do incômodo do atraso. Por isso, esse pedido não foi aceito.",
+            "O imóvel foi entregue depois até do prazo extra de 180 dias do contrato.",
+            "Por isso, a construtora deve devolver o que você gastou com aluguel no atraso.",
+            "O pedido de dano moral não foi aceito.",
           ],
           whatNext: [
-            "Depois desta sentença, foi apresentado um recurso ao tribunal.",
-            "O tribunal já julgou o recurso. Essa decisão é mais recente e pode ter mudado o resultado.",
-            "Ainda não conseguimos explicar a decisão do tribunal com segurança. Consulte o documento original.",
+            "Houve recurso e o tribunal já decidiu.",
+            "Ainda não conseguimos explicar essa decisão com segurança.",
           ],
         },
         original: {
@@ -473,9 +568,9 @@ export const processes: Process[] = [
           "Para não passar uma informação errada, não vamos resumir o resultado. Consulte o documento original ou fale com um atendente.",
         explanation: null,
         uncertaintyReasons: [
-          "Partes do documento não puderam ser lidas com clareza na cópia digital.",
-          "Não foi possível identificar com segurança se o tribunal manteve ou mudou a sentença.",
-          "Um resumo automático, neste caso, poderia mudar o sentido da decisão. Preferimos não mostrar um resultado do que mostrar um resultado errado.",
+          "Partes do documento estão ilegíveis na cópia digital.",
+          "Não foi possível saber se o tribunal manteve ou mudou a sentença.",
+          "Preferimos não mostrar um resultado a mostrar um resultado errado.",
         ],
         original: {
           heading: "ACÓRDÃO",
