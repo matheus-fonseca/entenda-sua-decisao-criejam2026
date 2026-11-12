@@ -104,22 +104,24 @@ export function ProcessDecisionView({ process, decision }: ProcessDecisionViewPr
             <ArrowLeft className="size-4" aria-hidden="true" />
             Voltar
           </Link>
-          <div className="mt-3 flex items-center gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-brand shadow-md ring-1 shadow-navy/10 ring-border sm:size-14">
-              <Gavel className="size-6 sm:size-7" aria-hidden="true" />
-            </span>
-            <div className="min-w-0">
-              <h1 className="font-heading text-[1.65rem] leading-tight font-bold text-brand-strong sm:text-[2rem]">
-                Entenda a decisão
-              </h1>
-              <p className="text-[0.98rem] text-foreground/80">
-                Veja o que {decision.decidedBy} decidiu, sem palavras difíceis.
-              </p>
+          {/* Quebra de linha natural: botões à direita do título quando cabem, abaixo quando não. */}
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-4">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-brand shadow-md ring-1 shadow-navy/10 ring-border sm:size-14">
+                <Gavel className="size-6 sm:size-7" aria-hidden="true" />
+              </span>
+              <div className="min-w-0">
+                <h1 className="font-heading text-[1.65rem] leading-tight font-bold text-brand-strong sm:text-[2rem]">
+                  Entenda a decisão
+                </h1>
+              </div>
             </div>
+            {/* Logo no topo: muitos cidadãos preferem ouvir ou assistir a ler. */}
+            <AccessibilityControls key={`${viewKey}-audio`} text={buildSpokenExplanation(process, decision)} />
           </div>
         </div>
 
-        <ProcessMetadata process={process} decision={decision} />
+        <ProcessMetadata process={process} />
 
         <ProcessTimeline process={process} selectedDecisionId={decision.id} />
 
@@ -128,8 +130,6 @@ export function ProcessDecisionView({ process, decision }: ProcessDecisionViewPr
         <DecisionSummary decision={decision} isLatest={isLatest} />
 
         <ExplanationSection key={`${viewKey}-explicacao`} items={buildSections(process, decision, isLatest)} />
-
-        <AccessibilityControls key={`${viewKey}-audio`} text={buildSpokenExplanation(process, decision)} />
 
         <div className="border-t border-border pt-4">
           <FeedbackWidget key={`${viewKey}-avaliacao`} feedbackId={viewKey} />

@@ -27,12 +27,12 @@ const messages: Record<SpeechState, string> = {
   idle: "",
   speaking: "Reproduzindo a explicação em áudio.",
   unavailable:
-    "Seu navegador não oferece leitura em voz alta. Você pode ler o texto acima ou usar o leitor de tela do seu dispositivo.",
-  error: "Não foi possível reproduzir o áudio neste navegador. Tente novamente ou leia o texto acima.",
+    "Seu navegador não oferece leitura em voz alta. Você pode ler o texto desta página ou usar o leitor de tela do seu dispositivo.",
+  error: "Não foi possível reproduzir o áudio neste navegador. Tente novamente ou leia o texto desta página.",
 };
 
 const controlButton =
-  "inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border bg-white px-5 font-heading text-[1.1rem] font-bold transition-all duration-150 hover:-translate-y-px hover:shadow-sm active:translate-y-0 sm:w-auto sm:min-w-64";
+  "inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-xl border bg-white px-5 font-heading text-[1.1rem] font-bold transition-all duration-150 hover:-translate-y-px hover:shadow-sm active:translate-y-0 sm:w-auto";
 
 export function AccessibilityControls({ text }: { text: string }) {
   const [state, setState] = useState<SpeechState>("idle");
@@ -99,11 +99,11 @@ export function AccessibilityControls({ text }: { text: string }) {
   const speaking = state === "speaking";
 
   return (
-    <section aria-labelledby="recursos-acessibilidade" className="rounded-2xl bg-brand-soft px-4 py-4 sm:px-6">
+    <section aria-labelledby="recursos-acessibilidade" className="w-full sm:w-auto">
       <h2 id="recursos-acessibilidade" className="sr-only">
-        Outras formas de acessar a explicação
+        Ouvir ou assistir à explicação
       </h2>
-      <div className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-5">
+      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <button
           type="button"
           onClick={speaking ? stop : play}
@@ -111,8 +111,8 @@ export function AccessibilityControls({ text }: { text: string }) {
           className={cn(
             controlButton,
             speaking
-              ? "border-brand bg-brand text-white hover:bg-brand-strong"
-              : "border-brand/40 text-brand-strong hover:border-brand",
+              ? "border-brand-strong bg-brand-strong text-white hover:bg-brand"
+              : "border-brand bg-brand text-white hover:bg-brand-strong",
           )}
         >
           {speaking ? (
@@ -135,7 +135,7 @@ export function AccessibilityControls({ text }: { text: string }) {
       <p
         role="status"
         aria-live="polite"
-        className={cn("text-center text-sm text-foreground/80", state === "idle" ? "sr-only" : "mt-3")}
+        className={cn("text-sm text-foreground/80 sm:max-w-md", state === "idle" ? "sr-only" : "mt-2")}
       >
         {messages[state]}
       </p>

@@ -88,7 +88,7 @@ function EventText({ event, isDecision, selected }: { event: ProcessEvent; isDec
         {event.label}
         {event.note && <span className="block">({event.note})</span>}
       </p>
-      <span className="sr-only">Nome técnico: {event.technicalName}. </span>
+      {event.status !== "futuro" && <span className="sr-only">Nome técnico: {event.technicalName}. </span>}
       <p className={cn("mt-0.5 text-[0.8rem] tabular-nums", isCurrent ? "font-semibold text-foreground" : "text-muted-foreground")}>
         {event.date ?? (
           <>
@@ -157,7 +157,11 @@ export function ProcessTimeline({ process, selectedDecisionId }: ProcessTimeline
                   {content}
                 </Link>
               ) : (
-                <div title={`Nome técnico: ${event.technicalName}`} className={cn(layout, "cursor-help")}>
+                // Etapas futuras não mostram dica com o nome técnico.
+                <div
+                  title={event.status === "futuro" ? undefined : `Nome técnico: ${event.technicalName}`}
+                  className={cn(layout, event.status !== "futuro" && "cursor-help")}
+                >
                   {content}
                 </div>
               )}
@@ -176,10 +180,6 @@ export function ProcessTimeline({ process, selectedDecisionId }: ProcessTimeline
         <p className="flex items-center gap-1.5">
           <Info className="size-3.5 shrink-0 text-brand" aria-hidden="true" />
           Passe o mouse sobre uma etapa para ver o nome técnico.
-        </p>
-        <p className="flex items-center gap-1.5">
-          <span aria-hidden="true" className="inline-block w-4 shrink-0 border-t-2 border-dashed border-slate-300" />
-          Etapas futuras são possibilidades e podem não acontecer.
         </p>
       </div>
     </section>
