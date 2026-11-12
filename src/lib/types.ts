@@ -44,17 +44,11 @@ export type DocumentType = "Sentença" | "Acórdão";
  */
 export type DecisionOutcome = "negado" | "parcial" | "inseguro";
 
-export interface GlossaryTerm {
-  term: string;
-  meaning: string;
-}
-
 export interface Explanation {
   /** "Por que o juiz decidiu assim?" — frases curtas. */
   why: string[];
   /** "O que pode acontecer agora?" — frases curtas, sem recomendação jurídica. */
   whatNext: string[];
-  glossary?: GlossaryTerm[];
 }
 
 export interface OriginalDocument {

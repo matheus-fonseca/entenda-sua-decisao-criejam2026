@@ -22,8 +22,7 @@ export default function LoginPage() {
 
       <main id="conteudo" className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:py-16">
         <section aria-labelledby="titulo-app">
-          <p className="text-sm font-semibold tracking-wide text-brand uppercase">Minha Justiça</p>
-          <h1 id="titulo-app" className="font-heading mt-2 text-[2.1rem] leading-tight font-bold text-brand-strong sm:text-[2.6rem]">
+          <h1 id="titulo-app" className="font-heading text-[2.1rem] leading-tight font-bold text-brand-strong sm:text-[2.6rem]">
             Entenda sua Decisão
           </h1>
           <p className="mt-3 max-w-xl text-lg leading-relaxed text-foreground/85">

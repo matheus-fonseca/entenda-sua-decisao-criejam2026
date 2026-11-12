@@ -81,11 +81,6 @@ export const processes: Process[] = [
           "Depois disso, o processo poderá seguir para outras etapas, como um recurso ao tribunal. Isso não é automático.",
           "Se tiver dúvidas, fale com quem representa você no processo ou com o Balcão Virtual.",
         ],
-        glossary: [
-          { term: "Embargos de declaração", meaning: "pedido de esclarecimento" },
-          { term: "Improcedente", meaning: "pedido não aceito" },
-          { term: "Ônus da prova", meaning: "quem precisa provar o que diz" },
-        ],
       },
       original: {
         heading: "SENTENÇA",
@@ -191,11 +186,6 @@ export const processes: Process[] = [
           "Você e o INSS ainda podem pedir que o tribunal reveja a decisão. Isso se chama recurso.",
           "Se a decisão for mantida, o processo segue para a etapa em que o benefício é implantado e os valores são calculados.",
           "Não é possível informar aqui quando ou quanto será pago.",
-        ],
-        glossary: [
-          { term: "Procedência parcial", meaning: "parte do pedido foi aceita" },
-          { term: "Auxílio-doença", meaning: "nome antigo do auxílio por incapacidade temporária" },
-          { term: "Implantação", meaning: "quando o INSS passa a pagar o benefício" },
         ],
       },
       original: {

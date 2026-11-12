@@ -17,7 +17,7 @@ const titleFont = Barlow_Semi_Condensed({
 
 export const metadata: Metadata = {
   title: {
-    default: "Entenda sua Decisão · Minha Justiça (protótipo)",
+    default: "Entenda sua Decisão (protótipo)",
     template: "%s · Entenda sua Decisão (protótipo)",
   },
   description:

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowLeft,
-  BookA,
   CalendarClock,
   FileText,
   FileWarning,
@@ -105,7 +104,6 @@ export default async function ProcessPage({ params }: PageProps<"/processos/[id]
   if (!process) notFound();
 
   const { decision } = process;
-  const glossary = decision.explanation?.glossary;
 
   return (
     <main id="conteudo" className="flex-1">
@@ -137,23 +135,6 @@ export default async function ProcessPage({ params }: PageProps<"/processos/[id]
         <DecisionSummary decision={decision} />
 
         <ExplanationSection key={process.id} items={buildSections(process)} />
-
-        {glossary && glossary.length > 0 && (
-          <section aria-labelledby="glossario" className="rounded-xl border border-dashed border-border px-4 py-3 sm:px-5">
-            <h2 id="glossario" className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <BookA className="size-4.5 text-brand" aria-hidden="true" />
-              Palavras que aparecem na decisão original
-            </h2>
-            <dl className="mt-2 grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-2 lg:grid-cols-3">
-              {glossary.map((item) => (
-                <div key={item.term}>
-                  <dt className="inline font-semibold">{item.term}:</dt>{" "}
-                  <dd className="inline text-muted-foreground">{item.meaning}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
 
         <AccessibilityControls key={process.id} text={buildSpokenExplanation(process)} />
 
