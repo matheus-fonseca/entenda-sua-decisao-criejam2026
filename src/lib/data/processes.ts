@@ -3,7 +3,7 @@ import type { Process } from "@/lib/types";
 /**
  * DADOS FICTÍCIOS DE DEMONSTRAÇÃO.
  * Nomes, números de processo, datas e documentos foram inventados.
- * Não correspondem a pessoas, empresas ou processos reais.
+ * Não correspondem a pessoas, empregadores ou processos reais.
  */
 export const processes: Process[] = [
   {
@@ -31,15 +31,15 @@ export const processes: Process[] = [
       },
       {
         id: "defesa",
-        label: "Empresa respondeu",
+        label: "Empregador respondeu",
         date: "31/01/2024",
         status: "concluido",
-        description: "A empresa apresentou a defesa dela.",
+        description: "O empregador apresentou a defesa.",
         technicalName: "Contestação",
       },
       {
         id: "sentenca",
-        label: "Sentença",
+        label: "Decisão",
         date: "15/07/2024",
         status: "concluido",
         description: "O juiz decidiu os pedidos do processo.",
@@ -253,10 +253,10 @@ export const processes: Process[] = [
       },
       {
         id: "defesa",
-        label: "Empresa respondeu",
+        label: "Empregador respondeu",
         date: "20/05/2023",
         status: "concluido",
-        description: "A empresa apresentou a defesa dela.",
+        description: "O empregador apresentou a defesa.",
         technicalName: "Contestação",
       },
       {

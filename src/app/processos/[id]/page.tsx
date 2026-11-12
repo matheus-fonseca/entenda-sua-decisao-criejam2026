@@ -121,7 +121,7 @@ export default async function ProcessPage({ params }: PageProps<"/processos/[id]
             </span>
             <div className="min-w-0">
               <h1 className="font-heading text-[1.65rem] leading-tight font-bold text-brand-strong sm:text-[2rem]">
-                Entenda sua decisão
+                Entenda a decisão
               </h1>
               <p className="text-[0.98rem] text-foreground/80">
                 Veja o que {decision.decidedBy} decidiu, sem palavras difíceis.

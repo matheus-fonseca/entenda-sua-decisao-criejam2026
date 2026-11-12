@@ -24,10 +24,10 @@ export default function LoginPage() {
         <section aria-labelledby="titulo-app">
           <p className="text-sm font-semibold tracking-wide text-brand uppercase">Minha Justiça</p>
           <h1 id="titulo-app" className="font-heading mt-2 text-[2.1rem] leading-tight font-bold text-brand-strong sm:text-[2.6rem]">
-            Entenda sua Decisão
+            Entenda a Decisão
           </h1>
           <p className="mt-3 max-w-xl text-lg leading-relaxed text-foreground/85">
-            Explicações de sentenças e acórdãos em linguagem simples, para você saber o que foi decidido no seu
+            Explicações de decisão e acórdãos em linguagem simples, para você saber o que foi decidido no seu
             processo e o que pode acontecer depois.
           </p>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">

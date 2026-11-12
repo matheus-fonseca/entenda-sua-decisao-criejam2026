@@ -25,7 +25,7 @@ export function BrandLockup({ compact = false }: { compact?: boolean }) {
       </span>
       <span aria-hidden="true" className="h-6 w-px shrink-0 bg-white/40" />
       <span className="font-heading truncate text-[1rem] leading-none font-medium sm:text-xl">
-        Entenda sua decisão
+        Entenda a decisão
       </span>
       {!compact && (
         <>

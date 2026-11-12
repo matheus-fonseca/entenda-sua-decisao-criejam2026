@@ -1,4 +1,4 @@
-# Entenda sua Decisão — protótipo ilustrativo
+# Entenda a Decisão — protótipo ilustrativo
 
 Protótipo web navegável, criado para uma oficina de inovação do Poder Judiciário. Ele explica sentenças e acórdãos em linguagem simples para quem não conhece termos jurídicos. A integração com Jus.br / Minha Justiça / CNJ é apenas conceitual.
 
