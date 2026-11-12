@@ -66,7 +66,7 @@ export const processes: Process[] = [
       date: "15/07/2024",
       decidedBy: "o juiz",
       outcome: "negado",
-      headline: "O juiz não aceitou seu pedido de horas extras na sentença.",
+      headline: "O juiz não aceitou seu pedido de horas extras na decisão.",
       subheadline: "Mas a decisão ainda está sendo discutida. O resultado pode mudar.",
       explanation: {
         why: [
@@ -76,8 +76,8 @@ export const processes: Process[] = [
           "Isso não quer dizer que alguém mentiu. Quer dizer que as provas não foram suficientes para o juiz.",
         ],
         whatNext: [
-          "Foi feito um pedido de esclarecimento sobre a sentença.",
-          "O juiz vai analisar esse pedido. A sentença pode ser mantida ou ajustada.",
+          "Foi feito um pedido de esclarecimento sobre a decisão.",
+          "O juiz vai analisar esse pedido. A decisão pode ser mantida ou ajustada.",
           "Depois disso, o processo poderá seguir para outras etapas, como um recurso ao tribunal. Isso não é automático.",
           "Se tiver dúvidas, fale com quem representa você no processo ou com o Balcão Virtual.",
         ],
