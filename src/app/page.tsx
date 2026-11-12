@@ -1,8 +1,7 @@
-import Link from "next/link";
-import { BookOpenText, Info, ListChecks, LogIn, Volume2 } from "lucide-react";
 import { BrandLockup, BrandSwoosh } from "@/components/brand";
 import { PrototypeBadge } from "@/components/prototype-badge";
-import { DEFAULT_PROCESS_ID } from "@/lib/processes";
+import { BookOpenText, Info, ListChecks, LogIn, Volume2 } from "lucide-react";
+import Link from "next/link";
 
 const features = [
   { icon: BookOpenText, title: "Linguagem simples", text: "Saiba o que foi decidido, sem palavras difíceis." },
@@ -23,7 +22,7 @@ export default function LoginPage() {
       <main id="conteudo" className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:py-16">
         <section aria-labelledby="titulo-app">
           <h1 id="titulo-app" className="font-heading text-[2.1rem] leading-tight font-bold text-brand-strong sm:text-[2.6rem]">
-            Entenda sua Decisão
+            Entenda a Decisão
           </h1>
           <p className="mt-3 max-w-xl text-lg leading-relaxed text-foreground/85">
             Explicações de sentenças e acórdãos em linguagem simples, para você saber o que foi decidido no seu
@@ -56,7 +55,7 @@ export default function LoginPage() {
           </p>
 
           <Link
-            href={`/processos/${DEFAULT_PROCESS_ID}`}
+            href="/processos"
             className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-brand px-6 text-base font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-brand-strong hover:shadow-md"
           >
             <LogIn className="size-5" aria-hidden="true" />

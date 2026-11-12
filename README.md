@@ -1,4 +1,4 @@
-# Entenda sua Decisão — protótipo ilustrativo
+# Entenda a Decisão — protótipo ilustrativo
 
 Protótipo web navegável, criado para uma oficina de inovação do Poder Judiciário. Ele explica sentenças e acórdãos em linguagem simples para quem não conhece termos jurídicos. A integração com Jus.br / Minha Justiça / CNJ é apenas conceitual.
 
@@ -20,13 +20,33 @@ npm run build && npm start   # versão de produção local
 | Rota | Tela |
 | --- | --- |
 | `/` | Login demonstrativo ("Entrar com Gov.br (demonstração)" apenas navega) |
-| `/processos` | Meus processos (lista com busca) |
-| `/processos/reclamacao-trabalhista` | Cenário A: trabalhista, pedido negado com pedido de esclarecimento em análise (selecionado após o login) |
-| `/processos/beneficio-previdenciario` | Cenário B: previdenciário, sentença parcialmente favorável |
-| `/processos/acao-civel` | Cenário C: cível, interpretação insegura (sem síntese) |
-| `/processos/[id]/decisao-original` | Documento original fictício |
+| `/processos` | Meus processos (lista com busca), primeira tela após o login |
+| `/processos/[id]` | Processo aberto na explicação da **decisão mais recente** |
+| `/processos/[id]/decisoes/[decisaoId]` | Explicação de uma decisão específica (ex.: `sentenca`, `acordao`) |
+| `/processos/[id]/decisoes/[decisaoId]/original` | Documento original fictício daquela decisão |
 
-A rota define o processo selecionado, então cada caso tem um link direto.
+A rota define o processo e a decisão selecionados, então cada caso tem um link direto.
+
+## Cenários
+
+| Processo | Decisões | Situação atual |
+| --- | --- | --- |
+| `reclamacao-trabalhista` (TRT10) | Sentença: horas extras negadas (cinza). Acórdão: recurso aceito em parte (verde) | Acórdão publicado |
+| `beneficio-previdenciario` (TRF1) | Sentença parcialmente favorável (verde) | Pedido de esclarecimento (embargos de declaração) em análise |
+| `acao-civel` (TJPE) | Sentença aceita em parte (verde). Acórdão com interpretação insegura (âmbar, sem síntese) | Acórdão publicado, sem explicação segura |
+
+Os documentos originais fictícios citam fundamentos jurídicos reais para dar verossimilhança. Os principais são:
+
+- **Trabalhista:** arts. 74, § 2º, 791-A, 818 e 895 da CLT, Súmulas 126 e 338 do TST e ADI 5766.
+- **Previdenciário:** arts. 25, 42, 59 e 60 da Lei 8.213/91, arts. 85, 496 e 1.022 a 1.026 do CPC, Súmula 111 do STJ e STF RE 631.240.
+- **Cível:** CDC, art. 43-A da Lei 4.591/64, arts. 402 e 405 do CC, arts. 85, 86 e 334 do CPC e Súmula 43 do STJ.
+
+## Navegação pelas decisões
+
+- Na timeline, os atos decisórios (sentenças e acórdãos) são links. Cada um abre a explicação daquela decisão, e a decisão aberta fica destacada ("Explicação aberta").
+- Quem abre uma decisão anterior vê o aviso "Existe uma decisão mais recente neste processo", com o botão "Ver decisão mais recente". O cartão de resultado mostra o selo "Decisão anterior" ou "Decisão mais recente".
+- Numa decisão anterior, a segunda seção passa a se chamar "O que aconteceu depois?".
+- Todos os eventos da timeline mostram o nome técnico do ato logo abaixo do nome em linguagem simples (ex.: "Empresa respondeu", *Contestação*).
 
 ## Deploy na Vercel
 
@@ -49,7 +69,9 @@ src/
     app-header.tsx             AppHeader (identidade + controles de fonte/acessibilidade)
     process-sidebar.tsx        ProcessSidebar, ProcessList (busca) e MobileProcessNav (painel recolhível)
     process-metadata.tsx       ProcessMetadata
-    process-timeline.tsx       ProcessTimeline (+ destaque "Agora")
+    process-decision-view.tsx  Tela de explicação de uma decisão (usada pelas duas rotas)
+    process-timeline.tsx       ProcessTimeline (decisões clicáveis)
+    newer-decision-notice.tsx  Aviso de decisão mais recente
     decision-summary.tsx       DecisionSummary (cinza / verde / âmbar)
     explanation-section.tsx    ExplanationSection (accordions abertos por padrão)
     accessibility-controls.tsx AccessibilityControls (SpeechSynthesis + avatar)
@@ -70,11 +92,13 @@ Para trocar os dados por uma API, basta reimplementar as funções de `src/lib/p
 
 - **Tribunais dos cenários A e B:** a lista de telas e a imagem de referência indicam TRT10 e TRF1, mas a descrição dos cenários fala em TRT6 e TRF5. Seguimos a referência visual obrigatória (TRT10 / TRF1). Para mudar, basta editar `src/lib/data/processes.ts`.
 - **Números de processo:** seguem o formato visual CNJ, mas são inventados. Os dígitos verificadores não foram calculados, para não coincidir com processos reais.
-- **Cenário cível:** o documento é um acórdão, para mostrar os dois tipos de documento. Por ser inseguro, não traz nenhuma síntese do resultado. A tela orienta a ler o documento original e a procurar atendimento humano.
-- **Timeline:** as etapas futuras aparecem tracejadas e indicadas como possibilidades ("podem não acontecer"). No celular, a timeline fica vertical para evitar rolagem horizontal.
+- **Cenário trabalhista:** é o foco principal da demonstração. Tem sentença e acórdão, para mostrar o resultado mudando entre as instâncias.
+- **Cenário previdenciário:** traz os embargos de declaração ("Pedido de esclarecimento") em análise depois da sentença. A explicação avisa que o resultado ainda pode mudar e não promete pagamento imediato.
+- **Cenário cível:** é o caso em que a IA ficou ambígua. O acórdão é inseguro e não traz nenhuma síntese do resultado. A tela orienta a ler o documento original e a procurar atendimento humano.
+- **Timeline:** as etapas futuras aparecem tracejadas e indicadas como possibilidades ("podem não acontecer"). A timeline fica horizontal a partir de 1280 px. Abaixo disso, fica vertical para não apertar até 7 etapas nem causar rolagem horizontal.
 - **Áudio:** usa `SpeechSynthesisUtterance` em pt-BR, falando frase por frase. Um único botão alterna entre "Ouvir" e "Parar". Se o navegador não tiver suporte ou nenhuma voz começar em 4 s, aparece uma mensagem.
 - **Avatar:** abre um modal marcado "Demonstração · sem vídeo real", com ilustração estática e o texto que seria apresentado.
-- **Avaliação:** o voto fica no `localStorage` (`entenda:feedback:<id>`), pode ser alterado ou desfeito e aparece com uma confirmação discreta.
+- **Avaliação:** o voto fica no `localStorage` por decisão (`entenda:feedback:<processo>-<decisão>`), pode ser alterado ou desfeito e aparece com uma confirmação discreta.
 - **Botão de acessibilidade do cabeçalho:** abre atalhos ("Ir para o conteúdo", "Ir para Meus processos") e controles de tamanho do texto. A+ / A / A- também ficam visíveis no desktop.
 - **Logotipos:** a identidade é reconstruída com texto e faixas decorativas em SVG. Não usamos logotipos oficiais.
 - Sem vermelho para resultados desfavoráveis, sem cálculo de prazos e sem recomendação jurídica.

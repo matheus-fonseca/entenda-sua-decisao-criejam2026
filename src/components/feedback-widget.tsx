@@ -12,14 +12,14 @@ const options: { value: Vote; label: string; icon: LucideIcon }[] = [
 ];
 
 /** Avaliação leve: voto salvo apenas no navegador (localStorage), para demonstração. */
-export function FeedbackWidget({ processId }: { processId: string }) {
-  const [stored, setStored] = useLocalStorage(`entenda:feedback:${processId}`);
+export function FeedbackWidget({ feedbackId }: { feedbackId: string }) {
+  const [stored, setStored] = useLocalStorage(`entenda:feedback:${feedbackId}`);
   const vote: Vote | null = stored === "sim" || stored === "nao" ? stored : null;
 
   return (
-    <div className="flex flex-col items-center gap-2 py-1" role="group" aria-labelledby={`feedback-${processId}`}>
+    <div className="flex flex-col items-center gap-2 py-1" role="group" aria-labelledby={`feedback-${feedbackId}`}>
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-        <span id={`feedback-${processId}`} className="text-sm font-medium text-foreground">
+        <span id={`feedback-${feedbackId}`} className="text-sm font-medium text-foreground">
           Essa explicação foi útil?
         </span>
         <div className="flex gap-2">

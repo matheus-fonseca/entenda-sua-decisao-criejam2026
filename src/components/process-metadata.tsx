@@ -1,4 +1,5 @@
-import type { Process } from "@/lib/types";
+import { decisionLabel } from "@/lib/processes";
+import type { Decision, Process } from "@/lib/types";
 
 function Item({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (
@@ -9,8 +10,7 @@ function Item({ label, children, className }: { label: string; children: React.R
   );
 }
 
-export function ProcessMetadata({ process }: { process: Process }) {
-  const { decision } = process;
+export function ProcessMetadata({ process, decision }: { process: Process; decision: Decision }) {
   return (
     <section aria-labelledby="dados-processo" className="rounded-xl border border-border bg-surface px-4 py-3.5 sm:px-5">
       <h2 id="dados-processo" className="sr-only">
@@ -23,7 +23,8 @@ export function ProcessMetadata({ process }: { process: Process }) {
         <Item label="Tribunal">{process.court}</Item>
         <Item label="Classe">{process.className}</Item>
         <Item label="Documento" className="col-span-2 md:col-span-1">
-          {decision.documentType}
+          {decisionLabel(decision)}
+          <span className="font-normal text-muted-foreground"> ({decision.documentType.toLowerCase()})</span>
           <span className="font-normal text-muted-foreground"> · {decision.date}</span>
         </Item>
       </dl>

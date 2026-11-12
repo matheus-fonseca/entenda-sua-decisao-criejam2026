@@ -1,4 +1,5 @@
-import { FileSearch, Scale, Scale3d, type LucideIcon } from "lucide-react";
+import { FileSearch, Scale, type LucideIcon } from "lucide-react";
+import { decisionLabel } from "@/lib/processes";
 import type { Decision, DecisionOutcome } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +21,7 @@ const tones: Record<
     iconWrap: "bg-white text-success-strong ring-success-border",
     divider: "bg-success/40",
     label: "Resultado: pedido aceito em parte",
-    icon: Scale3d,
+    icon: Scale,
   },
   // Interpretação insegura: âmbar suave.
   inseguro: {
@@ -32,7 +33,7 @@ const tones: Record<
   },
 };
 
-export function DecisionSummary({ decision }: { decision: Decision }) {
+export function DecisionSummary({ decision, isLatest }: { decision: Decision; isLatest: boolean }) {
   const tone = tones[decision.outcome];
   const Icon = tone.icon;
 
@@ -54,8 +55,18 @@ export function DecisionSummary({ decision }: { decision: Decision }) {
       </span>
       <span aria-hidden="true" className={cn("hidden w-px self-stretch sm:block", tone.divider)} />
       <div className="min-w-0">
-        <p className="mb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-          {tone.label} · {decision.documentType} de {decision.date}
+        <p className="mb-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 text-[0.68rem] tracking-normal normal-case ring-1",
+              isLatest ? "bg-white text-brand-strong ring-brand/30" : "bg-white/70 text-muted-foreground ring-border",
+            )}
+          >
+            {isLatest ? "Decisão mais recente" : "Decisão anterior"}
+          </span>
+          <span>
+            {tone.label} · {decisionLabel(decision)} de {decision.date}
+          </span>
         </p>
         <h2
           id="resultado-decisao"

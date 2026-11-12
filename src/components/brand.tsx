@@ -16,7 +16,7 @@ export function BrandSwoosh({ className }: { className?: string }) {
   );
 }
 
-/** Identidade textual Jus.br | Entenda sua decisão | CNJ. */
+/** Identidade textual Jus.br | Entenda a decisão | CNJ. */
 export function BrandLockup({ compact = false }: { compact?: boolean }) {
   return (
     <div className="flex min-w-0 items-center gap-2 text-white sm:gap-4">
@@ -25,7 +25,7 @@ export function BrandLockup({ compact = false }: { compact?: boolean }) {
       </span>
       <span aria-hidden="true" className="h-6 w-px shrink-0 bg-white/40" />
       <span className="font-heading truncate text-[1rem] leading-none font-medium sm:text-xl">
-        Entenda sua decisão
+        Entenda a decisão
       </span>
       {!compact && (
         <>

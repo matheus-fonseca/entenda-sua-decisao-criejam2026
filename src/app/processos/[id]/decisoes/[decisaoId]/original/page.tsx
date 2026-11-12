@@ -2,31 +2,38 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
-import { getProcessById, getProcessIds } from "@/lib/processes";
+import { decisionHref, decisionLabel, getDecision, getDecisionParams, getProcessById } from "@/lib/processes";
 
 export function generateStaticParams() {
-  return getProcessIds();
+  return getDecisionParams();
 }
 
-export async function generateMetadata({ params }: PageProps<"/processos/[id]/decisao-original">): Promise<Metadata> {
-  const { id } = await params;
+export async function generateMetadata({
+  params,
+}: PageProps<"/processos/[id]/decisoes/[decisaoId]/original">): Promise<Metadata> {
+  const { id, decisaoId } = await params;
   const process = getProcessById(id);
-  return { title: process ? `Decisão original · ${process.title}` : "Documento não encontrado" };
+  const decision = process && getDecision(process, decisaoId);
+  return {
+    title: process && decision ? `${decisionLabel(decision)} (original) · ${process.title}` : "Documento não encontrado",
+  };
 }
 
-export default async function OriginalDecisionPage({ params }: PageProps<"/processos/[id]/decisao-original">) {
-  const { id } = await params;
+export default async function OriginalDecisionPage({
+  params,
+}: PageProps<"/processos/[id]/decisoes/[decisaoId]/original">) {
+  const { id, decisaoId } = await params;
   const process = getProcessById(id);
-  if (!process) notFound();
+  const decision = process && getDecision(process, decisaoId);
+  if (!process || !decision) notFound();
 
-  const { decision } = process;
   const { original } = decision;
 
   return (
     <main id="conteudo" className="flex-1 bg-surface">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-5 sm:px-8 sm:py-7">
         <Link
-          href={`/processos/${process.id}`}
+          href={decisionHref(process, decision.id)}
           className="inline-flex w-fit items-center gap-2 rounded-md text-[0.95rem] font-semibold text-brand hover:underline"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />

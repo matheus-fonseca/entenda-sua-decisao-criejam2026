@@ -1,5 +1,5 @@
 /**
- * Tipos de domínio do protótipo "Entenda sua Decisão".
+ * Tipos de domínio do protótipo "Entenda a Decisão".
  * Pensados para que os dados demonstrativos possam ser substituídos
  * futuramente por uma API, sem alterar os componentes.
  */
@@ -31,8 +31,10 @@ export interface ProcessEvent {
   note?: string;
   /** Explicação curta da etapa, usada como descrição acessível. */
   description: string;
-  /** Nome técnico, quando diferente do nome cidadão. */
-  technicalName?: string;
+  /** Nome técnico do ato (ex.: "Contestação", "Sentença"). */
+  technicalName: string;
+  /** Quando o evento é um ato decisório, aponta para a decisão explicada. */
+  decisionId?: string;
 }
 
 export type DocumentType = "Sentença" | "Acórdão";
@@ -47,7 +49,10 @@ export type DecisionOutcome = "negado" | "parcial" | "inseguro";
 export interface Explanation {
   /** "Por que o juiz decidiu assim?" — frases curtas. */
   why: string[];
-  /** "O que pode acontecer agora?" — frases curtas, sem recomendação jurídica. */
+  /**
+   * "O que pode acontecer agora?" (decisão mais recente) ou
+   * "O que aconteceu depois?" (decisão anterior) — frases curtas, sem recomendação jurídica.
+   */
   whatNext: string[];
 }
 
@@ -58,6 +63,8 @@ export interface OriginalDocument {
 }
 
 export interface Decision {
+  /** Identificador usado na URL (ex.: "sentenca", "acordao"). */
+  id: string;
   documentType: DocumentType;
   date: string;
   /** Quem decidiu, em linguagem simples ("o juiz", "o tribunal"). */
@@ -85,8 +92,7 @@ export interface Process {
   status: ProcessStatus;
   statusLabel: string;
   parties: Party[];
-  /** Frase do destaque "Agora:". */
-  currentSituation: string;
   events: ProcessEvent[];
-  decision: Decision;
+  /** Decisões do processo em ordem cronológica; a última é a mais recente. */
+  decisions: Decision[];
 }
