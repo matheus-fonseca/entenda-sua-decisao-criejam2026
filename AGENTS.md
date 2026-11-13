@@ -37,7 +37,7 @@ Não há testes automatizados. Antes de concluir uma mudança, rode `npm run lin
 - **Dados:** `src/lib/data/processes.ts` guarda os cenários fictícios. `src/lib/types.ts` define o modelo. `src/lib/processes.ts` é a **única** camada de acesso aos dados. Páginas e componentes não importam `data/processes.ts` diretamente.
 - **Server Components por padrão.** Só são `"use client"` os componentes com estado, efeitos ou APIs do navegador: sidebar com busca, modais, controles de acessibilidade, avaliação e os hooks. Ao passar dados para um client component, envie só o necessário (como `getProcessListItems()`, que devolve um resumo enxuto).
 - `ProcessDecisionView` é a tela de explicação, usada pelas duas rotas de decisão.
-- O estado do navegador fica no `localStorage` por `useLocalStorage` (`useSyncExternalStore`, com fallback em memória). As chaves usam o prefixo `entenda:` (`entenda:font-scale`, `entenda:feedback:<processo>-<decisão>`).
+- O estado do navegador fica no `localStorage` por `useLocalStorage` (`useSyncExternalStore`, com fallback em memória). As chaves usam o prefixo `entenda:` (`entenda:font-scale`, `entenda:feedback:<processo>-<decisão>`, `entenda:notificacoes` (avisos por WhatsApp/e-mail; começam habilitados), `entenda:login-pendente` (pede o splash de processamento após o login)).
 - `src/components/ui/` é gerado pelo shadcn (`components.json`). Adicione componentes com `npx shadcn@latest add <nome>`. Edite os arquivos gerados só quando necessário.
 - Alias `@/*` aponta para `src/*`. Importe `cn` de `@/lib/utils`.
 
@@ -50,7 +50,7 @@ Estas regras fazem parte do propósito do protótipo. Não as quebre ao editar t
 - **Sem vermelho** para resultados desfavoráveis. Os resultados usam cartões cinza (`negado`), verde (`parcial`) e âmbar (`inseguro`).
 - Quando `Decision.explanation` é `null` (interpretação insegura), **nenhuma síntese do resultado** é exibida. A tela orienta a ler o original e a buscar atendimento humano.
 - Decisões anteriores mostram o aviso de decisão mais recente, e a segunda seção se chama "O que aconteceu depois?".
-- Todo dado novo é inventado e deve ficar identificado como demonstração (use o `PrototypeBadge`). Não use logotipos oficiais, nem nomes ou números de processos reais. Os fundamentos jurídicos citados nos documentos originais, porém, devem ser reais.
+- Todo dado novo é inventado e deve ficar identificado como demonstração (use o `PrototypeBadge`).Não use nomes ou números de processos reais. Os fundamentos jurídicos citados nos documentos originais, porém, devem ser reais.
 - Ao alterar um cenário, atualize a tabela de cenários do README.md.
 
 ## Acessibilidade

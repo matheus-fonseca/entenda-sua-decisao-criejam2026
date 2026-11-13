@@ -34,7 +34,7 @@ A ordem segue o roteiro da demonstração: do caso mais simples ao mais complexo
 | # | Processo (título na lista) | Decisões | Situação atual | O que mostra |
 | --- | --- | --- | --- | --- |
 | 1 | `rescisao-trabalhista` (TRT2) — Rescisão do contrato | Sentença: verbas rescisórias aceitas, dano moral negado (verde) | Sentença publicada, ainda cabe recurso | Entender uma decisão: resultado, motivo, próximo passo, ouvir/Libras |
-| 2 | `reclamacao-trabalhista` (TRT10) — Horas extras | Sentença: horas extras negadas (cinza). Acórdão: recurso aceito em parte (verde) | Acórdão publicado | O resultado mudou: navegar entre as duas decisões |
+| 2 | `reclamacao-trabalhista` (TRT6) — Horas extras | Sentença: horas extras negadas (cinza). Acórdão: recurso aceito em parte (verde) | Acórdão publicado | O resultado mudou: navegar entre as duas decisões |
 | 3 | `beneficio-previdenciario` (TRF1) — Benefício do INSS | Sentença parcialmente favorável (verde) | Pedido de esclarecimento (embargos de declaração) em análise | Etapa intermediária: o resultado ainda pode mudar |
 | 4 | `acao-civel` (TJPE) — Atraso na entrega do imóvel | Sentença aceita em parte (verde). Acórdão com interpretação insegura (âmbar, sem síntese) | Acórdão publicado, sem explicação segura | Saber quando não explicar e encaminhar ao atendimento |
 
@@ -45,6 +45,17 @@ Os documentos originais fictícios citam fundamentos jurídicos reais para dar v
 - **Trabalhista:** arts. 74, § 2º, 464, 477, §§ 6º e 8º, 790, 791-A, 818, 852-I e 895 da CLT, art. 18, § 1º, da Lei 8.036/90, Súmulas 126 e 338 do TST e ADI 5766.
 - **Previdenciário:** arts. 25, 42, 59 e 60 da Lei 8.213/91, arts. 85, 496 e 1.022 a 1.026 do CPC, Súmula 111 do STJ e STF RE 631.240.
 - **Cível:** CDC, art. 43-A da Lei 4.591/64, arts. 402 e 405 do CC, arts. 85, 86 e 334 do CPC e Súmula 43 do STJ.
+
+## Splash após o login
+
+Ao clicar em "Entrar com gov.br", `/processos` mostra um splash de 10 s simulando a IA processando os processos (progresso, etapas e um item por processo). Ele aparece em todo login; recarregar a página sem passar pelo login abre direto. A marca fica em `entenda:login-pendente` (`localStorage`) e é apagada ao fim do splash.
+
+## Avisos por WhatsApp e e-mail
+
+Demonstração: nenhuma mensagem é enviada. As preferências ficam no `localStorage` (`entenda:notificacoes`). WhatsApp e e-mail começam habilitados.
+
+- Na lista de processos, o cartão "Avisos de novidades" tem o interruptor **Todos os processos** (vale para os atuais e para os novos) e, dentro dele, WhatsApp e e-mail.
+- Na tela de cada processo, o botão **Avisos** ajusta só aquele processo. Com "Todos os processos" ligado, os interruptores aparecem desabilitados e seguem o ajuste geral; desligando o geral, cada processo volta a ter o seu.
 
 ## Navegação pelas decisões
 
@@ -97,7 +108,7 @@ Para trocar os dados por uma API, basta reimplementar as funções de `src/lib/p
 
 ## Decisões tomadas (itens indefinidos ou conflitantes)
 
-- **Tribunais dos cenários A e B:** a lista de telas e a imagem de referência indicam TRT10 e TRF1, mas a descrição dos cenários fala em TRT6 e TRF5. Seguimos a referência visual obrigatória (TRT10 / TRF1). Para mudar, basta editar `src/lib/data/processes.ts`.
+- **Tribunais dos cenários A e B:** a lista de telas e a imagem de referência indicam TRT6 e TRF1, mas a descrição dos cenários fala em TRT6 e TRF5. Seguimos a referência visual obrigatória (TRT6 / TRF1). Para mudar, basta editar `src/lib/data/processes.ts`.
 - **Números de processo:** seguem o formato visual CNJ, mas são inventados. Os dígitos verificadores não foram calculados, para não coincidir com processos reais.
 - **Cenário trabalhista:** é o foco principal da demonstração. Tem sentença e acórdão, para mostrar o resultado mudando entre as instâncias.
 - **Cenário previdenciário:** traz os embargos de declaração ("Pedido de esclarecimento") em análise depois da sentença. A explicação avisa que o resultado ainda pode mudar e não promete pagamento imediato.
@@ -108,7 +119,7 @@ Para trocar os dados por uma API, basta reimplementar as funções de `src/lib/p
 - **Avaliação:** o voto fica no `localStorage` por decisão (`entenda:feedback:<processo>-<decisão>`), pode ser alterado ou desfeito e aparece com uma confirmação discreta.
 - **Cabeçalho:** o botão "Libras" fica ao lado dos controles e mostra só o ícone em telas pequenas.
 - **Botão de acessibilidade do cabeçalho:** abre atalhos ("Ir para o conteúdo", "Ir para Meus processos") e controles de tamanho do texto. A+ / A / A- também ficam visíveis no desktop.
-- **Logotipos:** a identidade é reconstruída com texto e faixas decorativas em SVG. Não usamos logotipos oficiais.
+- **Logotipos:** a identidade é reconstruída com texto e faixas decorativas em SVG.
 - Sem vermelho para resultados desfavoráveis, sem cálculo de prazos e sem recomendação jurídica.
 
 ## Acessibilidade
