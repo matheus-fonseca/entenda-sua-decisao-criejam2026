@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Semi_Condensed, Noto_Sans } from "next/font/google";
+import { VLibrasWidget } from "@/components/vlibras-widget";
 import "./globals.css";
 
 const bodyFont = Noto_Sans({
@@ -37,7 +38,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${bodyFont.variable} ${titleFont.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col overflow-x-hidden">{children}</body>
+      <body className="flex min-h-full flex-col overflow-x-hidden">{children}
+        <VLibrasWidget />
+      </body>
     </html>
   );
 }
