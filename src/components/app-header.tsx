@@ -1,5 +1,6 @@
 import { BrandLockup, BrandSwoosh } from "@/components/brand";
 import { HeaderControls } from "@/components/header-controls";
+import { LibrasButton } from "@/components/libras-button";
 import Link from "next/link";
 
 export function AppHeader() {
@@ -21,7 +22,13 @@ export function AppHeader() {
           >
             <BrandLockup />
           </Link>
-          <HeaderControls />
+          <div className="flex shrink-0 items-center gap-2">
+            <LibrasButton
+              compactOnMobile
+              className="inline-flex h-10 items-center gap-2 rounded-lg border border-white/30 px-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            />
+            <HeaderControls />
+          </div>
         </div>
       </header>
     </>

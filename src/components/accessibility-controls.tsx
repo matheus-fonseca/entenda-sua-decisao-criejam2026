@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Square, Volume2 } from "lucide-react";
-import { AvatarDemoModal } from "@/components/avatar-demo-modal";
+import { LibrasButton } from "@/components/libras-button";
 import { cn } from "@/lib/utils";
 
 type SpeechState = "idle" | "speaking" | "unavailable" | "error";
@@ -36,6 +36,7 @@ const controlButton =
 
 export function AccessibilityControls({ text }: { text: string }) {
   const [state, setState] = useState<SpeechState>("idle");
+  const [librasMessage, setLibrasMessage] = useState("");
   const runRef = useRef(0);
 
   const stop = useCallback(() => {
@@ -49,6 +50,7 @@ export function AccessibilityControls({ text }: { text: string }) {
       setState("unavailable");
       return;
     }
+    setLibrasMessage("");
     const synth = window.speechSynthesis;
     synth.cancel();
     const run = ++runRef.current;
@@ -97,11 +99,12 @@ export function AccessibilityControls({ text }: { text: string }) {
   }, []);
 
   const speaking = state === "speaking";
+  const message = messages[state] || librasMessage;
 
   return (
     <section aria-labelledby="recursos-acessibilidade" className="w-full sm:w-auto">
       <h2 id="recursos-acessibilidade" className="sr-only">
-        Ouvir ou assistir à explicação
+        Ouvir a explicação ou ver em Libras
       </h2>
       <div className="flex flex-wrap items-center gap-3">
         <button
@@ -129,17 +132,18 @@ export function AccessibilityControls({ text }: { text: string }) {
             </>
           )}
         </button>
-        <AvatarDemoModal
-          text={text}
-          triggerClassName={cn(controlButton, "border-brand/40 text-brand-strong hover:border-brand")}
+        <LibrasButton
+          onBeforeOpen={stop}
+          onMessage={setLibrasMessage}
+          className={cn(controlButton, "border-brand/40 text-brand-strong hover:border-brand")}
         />
       </div>
       <p
         role="status"
         aria-live="polite"
-        className={cn("text-sm text-foreground/80 sm:max-w-md", state === "idle" ? "sr-only" : "mt-2")}
+        className={cn("text-sm text-foreground/80 sm:max-w-md", message ? "mt-2" : "sr-only")}
       >
-        {messages[state]}
+        {message}
       </p>
     </section>
   );
