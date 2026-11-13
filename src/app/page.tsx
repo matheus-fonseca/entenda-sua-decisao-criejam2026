@@ -2,6 +2,7 @@ import { BrandLockup, BrandSwoosh } from "@/components/brand";
 import { GovBrMark } from "@/components/govbr-mark";
 import { LoginLink } from "@/components/login-link";
 import { PrototypeBadge } from "@/components/prototype-badge";
+import Link from "next/link";
 import { BookOpenText, Info, ListChecks, Volume2 } from "lucide-react";
 
 const features = [
@@ -63,6 +64,13 @@ export default function LoginPage() {
             </p>
           </div>
 
+          <Link
+            href="/gestao"
+            className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full text-sm font-semibold text-brand underline underline-offset-4 hover:text-brand-strong sm:mt-4"
+          >
+            Acesso para gestores (demonstração)
+          </Link>
+
           <div className="mt-6 hidden justify-center sm:flex">
             <PrototypeBadge />
           </div>
@@ -70,7 +78,7 @@ export default function LoginPage() {
 
         <ul
           aria-label="O que você encontra"
-          className="grid grid-cols-3 gap-2 sm:gap-4 lg:col-start-1 lg:row-start-2 lg:grid-cols-1 lg:self-start max-sm:[@media(max-height:620px)]:hidden"
+          className="grid grid-cols-3 gap-2 sm:gap-4 lg:col-start-1 lg:row-start-2 lg:grid-cols-1 lg:self-start max-sm:[@media(max-height:650px)]:hidden"
         >
           {features.map(({ icon: Icon, title, text }) => (
             <li

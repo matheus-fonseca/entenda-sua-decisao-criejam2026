@@ -53,6 +53,11 @@ Estas regras fazem parte do propósito do protótipo. Não as quebre ao editar t
 - Todo dado novo é inventado e deve ficar identificado como demonstração (use o `PrototypeBadge`).Não use nomes ou números de processos reais. Os fundamentos jurídicos citados nos documentos originais, porém, devem ser reais.
 - Ao alterar um cenário, atualize a tabela de cenários do README.md.
 
+## Painel de gestão
+
+- Rota `/gestao`, só com dados fictícios e determinísticos (sem `Math.random`). A única camada de acesso é `src/lib/metrics.ts`; os dados ficam em `src/lib/data/metrics.ts`.
+- Gráficos: use somente `EChart` (`src/components/charts/echart.tsx`), que importa só os módulos necessários do ECharts, usa SVG, respeita `prefers-reduced-motion` e lê as cores das variáveis CSS do tema. Todo gráfico precisa de uma tabela de dados equivalente (`ChartCard`) e não pode depender só de cor (use textura/rótulo).
+
 ## Acessibilidade
 
 É requisito central do produto, não um extra:

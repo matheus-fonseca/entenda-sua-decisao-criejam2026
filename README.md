@@ -46,6 +46,17 @@ Os documentos originais fictícios citam fundamentos jurídicos reais para dar v
 - **Previdenciário:** arts. 25, 42, 59 e 60 da Lei 8.213/91, arts. 85, 496 e 1.022 a 1.026 do CPC, Súmula 111 do STJ e STF RE 631.240.
 - **Cível:** CDC, art. 43-A da Lei 4.591/64, arts. 402 e 405 do CC, arts. 85, 86 e 334 do CPC e Súmula 43 do STJ.
 
+## Painel de gestão (`/gestao`)
+
+Painel simulado para gestores do serviço no CNJ, acessado por "Acesso para gestores (demonstração)" na tela de login. Todos os números são fictícios e fixos (calculados por fórmula em `src/lib/data/metrics.ts`, agregados por `src/lib/metrics.ts`), com filtros de período e ramo da Justiça. Gráficos em ECharts (`src/components/charts/echart.tsx`), cada um com a tabela de dados equivalente.
+
+Os indicadores respondem a quatro perguntas, separando o que o cidadão sente do que é auditado:
+
+- **Uso:** explicações geradas, quem leu o documento original, cidadãos ativos, cobertura, uso de áudio, Libras e avisos.
+- **Compreensão:** % das explicações em que o cidadão marcou "entendi" (e "não entendi"), por tipo de decisão. Só cerca de 15% das explicações recebem avaliação, por isso a base é o total de explicações.
+- **Qualidade da IA:** "não entendi" da IA (limite 8%) e do cidadão, funil recebidas → interpretadas → visualizadas, correções do agente Revisor e do revisor humano após auditoria, tempo até a explicação (mediana 20 s, p95 65 s) e custo total e por explicação. Os agentes são o Simplificado (escreve) e o Revisor (confere).
+- **Ações:** sugestões automáticas geradas por regra.
+
 ## Splash após o login
 
 Ao clicar em "Entrar com gov.br", `/processos` mostra um splash de 10 s simulando a IA processando os processos (progresso, etapas e um item por processo). Ele aparece em todo login; recarregar a página sem passar pelo login abre direto. A marca fica em `entenda:login-pendente` (`localStorage`) e é apagada ao fim do splash.
