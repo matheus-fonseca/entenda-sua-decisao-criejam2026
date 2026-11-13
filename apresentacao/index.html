@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explica.AI — Entenda a decisão</title>
+
+<!-- Fontes da identidade da solução: Barlow Semi Condensed (títulos) + Noto Sans (texto) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      navy: 'var(--navy)', deep: 'var(--navy-deep)', brand: 'var(--brand)',
+      brandsoft: 'var(--brand-soft)', cyan: 'var(--cyan)', surface: 'var(--surface)',
+      ink: 'var(--ink)', muted: 'var(--muted)', ok: 'var(--success)', oksoft: 'var(--success-soft)',
+      warn: 'var(--warn)', warnsoft: 'var(--warn-soft)', warnborder: 'var(--warn-border)',
+      neutral: 'var(--neutral-soft)', line: 'var(--line)',
+      sky: 'var(--flag-blue)', sun: 'var(--flag-yellow)', leaf: 'var(--flag-green)'
+    },
+    fontFamily: { display: 'var(--font-display)', body: 'var(--font-body)' },
+    transitionTimingFunction: { 'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)' }
+  } }
+};
+</script>
+
+<style>
+/* === 1. TOKENS (paleta do protótipo: src/app/globals.css + logo) === */
+:root {
+  --navy: #0c2a5c; --navy-deep: #071d41; --brand: #1351b4; --brand-soft: #e9f0fb;
+  --cyan: #21a3ca; --surface: #f5f7fb; --ink: #1b2541; --muted: #4a5670; --line: #dbe1ea;
+  --success: #15803d; --success-soft: #eaf6ec; --warn: #8a5300; --warn-soft: #fff6e0; --warn-border: #f1d08a;
+  --neutral-soft: #eef1f5;
+  --flag-blue: #2f7fd8; --flag-yellow: #f2c230; --flag-green: #2e9e52;
+  --font-display: 'Barlow Semi Condensed', sans-serif; --font-body: 'Noto Sans', sans-serif;
+  --stage-bg: #071d41; --slide-bg: #ffffff;
+}
+
+/* === 2. MECÂNICA DO PALCO (viewport-base.css, verbatim) === */
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   Include this ENTIRE file in every presentation
+   (the "stage mechanics" style block).
+   Slides are authored at 1920×1080 and scaled as a whole.
+
+   This is deliberately raw CSS, not Tailwind utilities:
+   the transform is set by JS, slide switching is state-
+   driven (.active/.visible), and print + reduced-motion
+   need media-query rules. Everything OUTSIDE this block
+   is styled with Tailwind utility classes.
+   =========================================== */
+
+/* 1. Lock the browser viewport */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 2. Full-window deck viewport */
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+/* 3. Fixed 16:9 design canvas.
+   JavaScript sets transform: translate(...) scale(...). */
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+
+/* 4. Slides stack inside the fixed stage; author content at 1920×1080, never reflowed per device.
+   position needs !important: the Tailwind CDN injects utilities after this block, so a stray `relative` on a slide would win the cascade and blank every slide after the first. */
+.slide {
+    position: absolute !important;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+/* 5. Keep media inside authored slide bounds */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* 6. Presentation chrome stays outside the slide design system */
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+/* 7. Print one fixed-size slide per page */
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+
+    .slide {
+        /* !important to beat the screen rule's hardened position */
+        position: relative !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .deck-controls {
+        display: none !important;
+    }
+}
+
+/* 8. Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+
+/* === 3. COREOGRAFIA === */
+.reveal { opacity: 0; transform: translateY(28px);
+  transition: opacity .7s cubic-bezier(0.16,1,0.3,1), transform .7s cubic-bezier(0.16,1,0.3,1);
+  transition-delay: var(--d, 0s); }
+.slide.visible .reveal { opacity: 1; transform: none; }
+.reveal-x { opacity: 0; transform: translateX(60px);
+  transition: opacity .9s cubic-bezier(0.16,1,0.3,1), transform .9s cubic-bezier(0.16,1,0.3,1);
+  transition-delay: var(--d, .2s); }
+.slide.visible .reveal-x { opacity: 1; transform: none; }
+.pop { opacity: 0; transform: scale(.4);
+  transition: opacity .4s ease, transform .5s cubic-bezier(0.34,1.56,0.64,1); transition-delay: var(--d, .8s); }
+.slide.visible .pop { opacity: 1; transform: none; }
+.grow { transform: scaleX(0); transform-origin: left; transition: transform 1.1s cubic-bezier(0.16,1,0.3,1); transition-delay: var(--d, .4s); }
+.slide.visible .grow { transform: scaleX(1); }
+@keyframes drift { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-14px) } }
+.slide.visible .drift { animation: drift 7s ease-in-out infinite; }
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+[contenteditable="true"]:hover { outline: 2px dashed var(--cyan); outline-offset: 6px; }
+@media (prefers-reduced-motion: reduce) { .drift { animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- === SLIDE 1: CAPA (≈10s) — layout: custom (opening) === -->
+<section class="slide active bg-deep text-white">
+  <div data-swoosh class="absolute top-0 left-0 w-[620px] h-[413px]"></div>
+  <div class="absolute right-[-260px] bottom-[-300px] w-[900px] h-[900px] rounded-full bg-[radial-gradient(circle,rgba(33,163,202,0.35),rgba(33,163,202,0)_65%)]"></div>
+  <div class="absolute left-[140px] top-[330px] w-[1200px]">
+    <img class="reveal w-[820px] h-auto" style="--d:.1s" src="assets/explica-ai-branco.svg" alt="Explica.AI">
+    <h1 class="reveal mt-[56px] font-display text-[150px] font-extrabold leading-[0.95] tracking-tight" style="--d:.3s">Entenda a decisão.</h1>
+    <p class="reveal mt-[36px] font-body text-[44px] font-medium text-white/85 leading-snug w-[1100px]" style="--d:.5s">Sentenças e acórdãos explicados em <span class="text-cyan font-bold">linguagem simples</span>, para quem mais precisa entender.</p>
+  </div>
+  <div class="reveal absolute left-[140px] bottom-[72px] flex items-center gap-[24px] font-body text-[26px] text-white/70" style="--d:.8s">
+    <span class="font-display text-[36px] font-bold text-white">Jus.br</span><span class="h-[30px] w-px bg-white/40"></span><span>Protótipo ilustrativo · todos os dados são fictícios</span>
+  </div>
+</section>
+
+<!-- === SLIDE 2: A DOR (≈30s) — layout: custom (comparison) === -->
+<section class="slide bg-deep text-white">
+  <div data-swoosh class="absolute top-0 left-0 w-[300px] h-[200px] opacity-90"></div>
+  <div class="absolute left-[96px] top-[170px] w-[820px]">
+    <p class="reveal font-display text-[34px] font-semibold uppercase tracking-[0.2em] text-cyan">A dor</p>
+    <h2 class="reveal mt-[28px] font-display text-[118px] font-extrabold leading-[0.98]" style="--d:.15s">Ter acesso à decisão não é <span class="text-cyan">entendê-la.</span></h2>
+    <p class="reveal mt-[44px] font-body text-[36px] leading-[1.5] text-white/80" style="--d:.35s">Encontrar informação sobre o próprio processo já é difícil. E, quando se encontra, ela vem em linguagem jurídica.</p>
+  </div>
+  <div class="absolute left-[1010px] top-[150px] w-[814px] flex flex-col gap-[28px]">
+    <div class="reveal-x rounded-[24px] bg-white/8 border border-white/15 p-[36px]" style="--d:.3s">
+      <p class="font-body text-[22px] font-semibold uppercase tracking-[0.12em] text-white/60">O que está no documento</p>
+      <p class="mt-[14px] font-body text-[31px] leading-[1.45] italic text-white/95">“Julgo parcialmente procedentes os pedidos, resolvendo o mérito nos termos do art. 487, I, do CPC.”</p>
+    </div>
+    <div class="reveal-x rounded-[24px] bg-white p-[36px] text-ink" style="--d:.55s">
+      <p class="font-body text-[22px] font-semibold uppercase tracking-[0.12em] text-brand">O que o cidadão se pergunta</p>
+      <ul class="mt-[14px] font-display text-[56px] font-bold leading-[1.15] text-navy">
+        <li>Eu ganhei ou perdi?</li><li>O que acontece agora?</li><li>Ainda cabe recurso?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 3: COMO PODEMOS (≈15s) — layout: custom (quote) === -->
+<section class="slide bg-surface text-ink">
+  <div class="absolute left-0 top-0 h-full w-[24px] bg-brand"></div>
+  <div class="absolute right-[-180px] top-[-180px] w-[760px] h-[760px] rounded-full bg-brandsoft"></div>
+  <div class="absolute left-[170px] top-[200px] w-[1440px]">
+    <p class="reveal font-display text-[34px] font-semibold uppercase tracking-[0.2em] text-brand">A pergunta que nos guiou</p>
+    <h2 class="reveal mt-[40px] font-display text-[132px] font-extrabold leading-[1.0] text-navy" style="--d:.2s">Como podemos fazer com que o cidadão <span class="text-brand underline decoration-[10px] decoration-sun underline-offset-[16px]">entenda</span> o que foi decidido?</h2>
+  </div>
+  <div class="reveal absolute left-[170px] bottom-[110px] flex items-center gap-[20px]" style="--d:.7s">
+    <img class="h-[130px] w-auto" src="assets/explica-ai.svg" alt="Explica.AI"><span class="font-body text-[34px] text-muted">É a resposta que propomos.</span>
+  </div>
+</section>
+
+<!-- === SLIDE 4: A SOLUÇÃO (≈30s) — layout: custom (spec + image) === -->
+<section class="slide bg-white text-ink">
+  <div data-swoosh class="absolute top-0 left-0 w-[260px] h-[173px]"></div>
+  <div class="absolute left-[96px] top-[200px] w-[800px]">
+    <p class="reveal font-display text-[34px] font-semibold uppercase tracking-[0.2em] text-brand">A solução</p>
+    <h2 class="reveal mt-[24px] font-display text-[84px] font-extrabold leading-[1.02] text-navy" style="--d:.1s">Uma plataforma nacional que explica a decisão.</h2>
+    <ul class="mt-[36px] flex flex-col gap-[22px] font-body text-[30px] leading-[1.4]">
+      <li class="reveal flex gap-[20px]" style="--d:.3s"><span class="mt-[10px] h-[16px] w-[16px] shrink-0 rounded-full bg-brand"></span><span><b>Web e celular</b>, integrada ao <b>Jus.br</b>.</span></li>
+      <li class="reveal flex gap-[20px]" style="--d:.45s"><span class="mt-[10px] h-[16px] w-[16px] shrink-0 rounded-full bg-brand"></span><span><b>IA</b> + bases nacionais (<b>DataJud</b> e <b>Codex</b>) para explicar em linguagem simples.</span></li>
+      <li class="reveal flex gap-[20px]" style="--d:.6s"><span class="mt-[10px] h-[16px] w-[16px] shrink-0 rounded-full bg-brand"></span><span>Entrada pela conta <b>gov.br</b>.</span></li>
+      <li class="reveal flex gap-[20px]" style="--d:.7s"><span class="mt-[10px] h-[16px] w-[16px] shrink-0 rounded-full bg-brand"></span><span>Qualquer tribunal ou ramo da Justiça, conforme os dados disponíveis.</span></li>
+    </ul>
+    <p class="reveal mt-[30px] inline-block rounded-full bg-neutral px-[28px] py-[12px] font-body text-[26px] text-muted" style="--d:.9s">Escopo: sentenças e acórdãos no protótipo.</p>
+  </div>
+  <div class="reveal-x absolute left-[940px] top-[230px] w-[884px] overflow-hidden rounded-[22px] border border-line shadow-[0_30px_80px_rgba(12,42,92,0.25)]" style="--d:.3s">
+    <img class="block w-full" src="assets/s-lista.png" alt="Tela Meus processos do Explica.AI">
+  </div>
+  <div class="reveal-x absolute left-[1520px] top-[430px] w-[270px] overflow-hidden rounded-[36px] border-[8px] border-deep bg-deep shadow-[0_30px_80px_rgba(7,29,65,0.4)]" style="--d:.55s">
+    <img class="block w-full" src="assets/s-movel.png" alt="Explicação da decisão no celular">
+  </div>
+</section>
+
+<!-- === SLIDE 5: PROTÓTIPO — A DECISÃO (≈30s) — layout: custom (image + callouts) === -->
+<section class="slide bg-surface text-ink">
+  <div data-swoosh class="absolute top-0 left-0 w-[260px] h-[173px]"></div>
+  <div class="absolute left-[96px] top-[170px] w-[680px]">
+    <p class="reveal font-display text-[34px] font-semibold uppercase tracking-[0.2em] text-brand">Protótipo em ação</p>
+    <h2 class="reveal mt-[20px] font-display text-[76px] font-extrabold leading-[1.02] text-navy" style="--d:.1s">Do juridiquês para a conversa.</h2>
+    <ol class="mt-[34px] flex flex-col gap-[22px] font-body text-[30px] leading-[1.3]">
+      <li class="reveal flex items-center gap-[22px]" style="--d:.3s"><span class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-navy font-display text-[30px] font-bold text-white">1</span><span><b>Linha do tempo</b> com nomes simples e o termo técnico como dica.</span></li>
+      <li class="reveal flex items-center gap-[22px]" style="--d:.45s"><span class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-ok font-display text-[30px] font-bold text-white">2</span><span><b>O resultado em uma frase</b>, sem culpa nem vermelho.</span></li>
+      <li class="reveal flex items-center gap-[22px]" style="--d:.6s"><span class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-brand font-display text-[30px] font-bold text-white">3</span><span><b>Por que</b> o juiz decidiu assim.</span></li>
+      <li class="reveal flex items-center gap-[22px]" style="--d:.75s"><span class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-brand font-display text-[30px] font-bold text-white">4</span><span><b>O que pode acontecer</b> agora, sem prever prazos.</span></li>
+    <li class="reveal flex items-center gap-[22px]" style="--d:.9s"><span class="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-brand font-display text-[30px] font-bold text-white">5</span><span><b>Avalie</b> a explicação: útil ou não.</span></li>
+    </ol>
+  </div>
+  <div class="reveal-x absolute left-[830px] top-[130px] w-[1000px]" style="--d:.25s">
+    <div class="relative overflow-hidden rounded-[22px] border border-line shadow-[0_30px_80px_rgba(12,42,92,0.25)]">
+      <img class="block w-full" src="assets/s-decisao.png" alt="Tela de explicação de uma decisão">
+      <span class="pop absolute left-[74%] top-[31.7%] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-navy font-display text-[28px] font-bold text-white ring-[4px] ring-white" style="--d:.9s">1</span>
+      <span class="pop absolute left-[26%] top-[44.3%] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-ok font-display text-[28px] font-bold text-white ring-[4px] ring-white" style="--d:1.05s">2</span>
+      <span class="pop absolute left-[26%] top-[61.5%] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-brand font-display text-[28px] font-bold text-white ring-[4px] ring-white" style="--d:1.2s">3</span>
+      <span class="pop absolute left-[61%] top-[61.5%] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-brand font-display text-[28px] font-bold text-white ring-[4px] ring-white" style="--d:1.35s">4</span>
+      <span class="pop absolute left-[76%] top-[93.5%] flex h-[48px] w-[48px] items-center justify-center rounded-full bg-brand font-display text-[28px] font-bold text-white ring-[4px] ring-white" style="--d:1.5s">5</span>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 6: PROTÓTIPO — SEGURANÇA + ACESSIBILIDADE (≈25s) — layout: custom === -->
+<section class="slide bg-white text-ink">
+  <div data-swoosh class="absolute top-0 left-0 w-[260px] h-[173px]"></div>
+  <div class="absolute left-[330px] top-[70px] w-[1500px]">
+    <h2 class="reveal font-display text-[72px] font-extrabold leading-[1.05] text-navy">Quando não dá para explicar com segurança, a IA <span class="text-warn">diz que não sabe.</span></h2>
+  </div>
+  <div class="reveal absolute left-[96px] top-[290px] w-[940px] overflow-hidden rounded-[22px] border border-line shadow-[0_30px_80px_rgba(12,42,92,0.22)]" style="--d:.25s">
+    <img class="block w-full" src="assets/s-insegura.png" alt="Tela com decisão que a IA preferiu não explicar">
+  </div>
+  <div class="absolute left-[1110px] top-[290px] w-[714px] flex flex-col gap-[26px]">
+    <div class="reveal-x rounded-[22px] border-[3px] border-warnborder bg-warnsoft p-[30px]" style="--d:.45s">
+      <p class="font-display text-[40px] font-bold text-warn">Sem síntese. Sem chute.</p>
+      <p class="mt-[8px] font-body text-[27px] leading-[1.4] text-ink">Orienta a ler o original e leva ao atendimento humano (Balcão Virtual do órgão julgador).</p>
+    </div>
+    <div class="reveal-x rounded-[22px] bg-navy p-[30px] text-white" style="--d:.65s">
+      <p class="font-display text-[40px] font-bold text-cyan">Acessível de verdade</p>
+      <div class="mt-[18px] flex flex-wrap gap-[12px] font-body text-[26px] font-semibold">
+        <span class="flex items-center gap-[10px] rounded-full bg-white/15 px-[22px] py-[10px]"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="h-[34px] w-[34px]" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M91.434 483.987c-.307-16.018 13.109-29.129 29.13-29.129h62.293v-5.714H56.993c-16.021 0-29.437-13.111-29.13-29.129C28.16 404.491 40.835 392 56.428 392h126.429v-5.714H29.136c-16.021 0-29.437-13.111-29.13-29.129.297-15.522 12.973-28.013 28.566-28.013h154.286v-5.714H57.707c-16.021 0-29.437-13.111-29.13-29.129.297-15.522 12.973-28.013 28.566-28.013h168.566l-31.085-22.606c-12.762-9.281-15.583-27.149-6.302-39.912 9.281-12.761 27.15-15.582 39.912-6.302l123.361 89.715a34.287 34.287 0 0 1 14.12 27.728v141.136c0 15.91-10.946 29.73-26.433 33.374l-80.471 18.934a137.16 137.16 0 0 1-31.411 3.646H120c-15.593-.001-28.269-12.492-28.566-28.014zm73.249-225.701h36.423l-11.187-8.136c-18.579-13.511-20.313-40.887-3.17-56.536l-13.004-16.7c-9.843-12.641-28.43-15.171-40.88-5.088-12.065 9.771-14.133 27.447-4.553 39.75l36.371 46.71zm283.298-2.103l-5.003-152.452c-.518-15.771-13.722-28.136-29.493-27.619-15.773.518-28.137 13.722-27.619 29.493l1.262 38.415L283.565 11.019c-9.58-12.303-27.223-14.63-39.653-5.328-12.827 9.599-14.929 28.24-5.086 40.881l76.889 98.745-4.509 3.511-94.79-121.734c-9.58-12.303-27.223-14.63-39.653-5.328-12.827 9.599-14.929 28.24-5.086 40.881l94.443 121.288-4.509 3.511-77.675-99.754c-9.58-12.303-27.223-14.63-39.653-5.328-12.827 9.599-14.929 28.24-5.086 40.881l52.053 66.849c12.497-8.257 29.055-8.285 41.69.904l123.36 89.714c10.904 7.93 17.415 20.715 17.415 34.198v16.999l61.064-47.549a34.285 34.285 0 0 0 13.202-28.177z"></path></svg>VLibras</span>
+        <span class="flex items-center gap-[10px] rounded-full bg-white/15 px-[22px] py-[10px]"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2 h-[34px] w-[34px]" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path><path d="M19.364 18.364a9 9 0 0 0 0-12.728"></path></svg>Ouvir a explicação</span>
+        <span class="rounded-full bg-white/15 px-[22px] py-[10px]">Fonte A+ / A / A−</span>
+        <span class="rounded-full bg-white/15 px-[22px] py-[10px]">Celular e teclado</span>
+      </div>
+    </div>
+    <p class="reveal font-body text-[24px] leading-[1.4] text-muted" style="--d:.85s">A explicação nunca substitui a decisão original e não traz recomendação jurídica.</p>
+  </div>
+</section>
+
+<!-- === SLIDE 7: PAINEL DE GESTÃO (≈25s) — layout: custom (image + list) === -->
+<section class="slide bg-surface text-ink">
+  <div data-swoosh class="absolute top-0 left-0 w-[260px] h-[173px]"></div>
+  <div class="absolute left-[96px] top-[190px] w-[700px]">
+    <p class="reveal font-display text-[34px] font-semibold uppercase tracking-[0.2em] text-brand">Diferencial · painel de gestão</p>
+    <h2 class="reveal mt-[20px] font-display text-[78px] font-extrabold leading-[1.02] text-navy" style="--d:.1s">Não é só a tela do cidadão.</h2>
+    <p class="reveal mt-[28px] font-body text-[30px] leading-[1.45] text-muted" style="--d:.25s">Quem gere o serviço vê, em um só lugar, se ele funciona:</p>
+    <ul class="mt-[26px] flex flex-col gap-[20px] font-body text-[30px]">
+      <li class="reveal flex items-center gap-[18px]" style="--d:.4s"><span class="h-[14px] w-[48px] rounded-full bg-brand"></span><span><b>Uso</b>: quantas decisões foram explicadas</span></li>
+      <li class="reveal flex items-center gap-[18px]" style="--d:.5s"><span class="h-[14px] w-[48px] rounded-full bg-ok"></span><span><b>Compreensão</b>: o cidadão entendeu?</span></li>
+      <li class="reveal flex items-center gap-[18px]" style="--d:.6s"><span class="h-[14px] w-[48px] rounded-full bg-cyan"></span><span><b>Qualidade da IA</b>: erros, correções e custo</span></li>
+      <li class="reveal flex items-center gap-[18px]" style="--d:.7s"><span class="h-[14px] w-[48px] rounded-full bg-sun"></span><span><b>Ações</b>: sugestões automáticas</span></li>
+    </ul>
+  </div>
+  <div class="reveal-x absolute left-[860px] top-[120px] w-[960px] overflow-hidden rounded-[22px] border border-line shadow-[0_30px_80px_rgba(12,42,92,0.25)]" style="--d:.3s">
+    <img class="block w-full" src="assets/s-gestao.png" alt="Painel de gestão com indicadores fictícios">
+  </div>
+  <p class="reveal absolute left-[860px] top-[920px] font-body text-[22px] text-muted" style="--d:1s">Indicadores ilustrativos, com dados fictícios.</p>
+</section>
+
+<!-- === SLIDE 8: DIFERENCIAIS (≈25s) — layout: custom (grid 3×2) === -->
+<section class="slide bg-white text-ink">
+  <div data-swoosh class="absolute top-0 left-0 w-[260px] h-[173px]"></div>
+  <h2 class="reveal absolute left-[330px] top-[70px] font-display text-[84px] font-extrabold leading-[1.02] text-navy">O que nos diferencia</h2>
+  <div class="absolute left-[96px] right-[96px] top-[250px] grid grid-cols-3 gap-[32px] auto-rows-[340px]">
+    <div class="reveal rounded-[24px] bg-brand p-[44px] text-white" style="--d:.1s"><p class="font-display text-[54px] font-bold leading-[1.05]">Linguagem simples</p><p class="mt-[18px] font-body text-[31px] leading-[1.4] text-white/95">Transforma o juridiquês em uma explicação que qualquer pessoa entende.</p></div>
+    <div class="reveal rounded-[24px] bg-surface border border-line p-[44px]" style="--d:.2s"><p class="font-display text-[54px] font-bold leading-[1.05] text-navy">Quem escreve não revisa</p><p class="mt-[18px] font-body text-[31px] leading-[1.4] text-muted">Um agente redige, outro confere cada frase contra o original.</p></div>
+    <div class="reveal rounded-[24px] bg-warnsoft border border-warnborder p-[44px]" style="--d:.3s"><p class="font-display text-[54px] font-bold leading-[1.05] text-warn">“Não entendi” é resposta</p><p class="mt-[18px] font-body text-[31px] leading-[1.4] text-ink">Na dúvida, não explica e encaminha a uma pessoa.</p></div>
+    <div class="reveal rounded-[24px] bg-surface border border-line p-[44px]" style="--d:.4s"><p class="font-display text-[54px] font-bold leading-[1.05] text-navy">Acessibilidade nativa</p><p class="mt-[18px] font-body text-[31px] leading-[1.4] text-muted">Libras, áudio e fonte ajustável em todas as telas.</p></div>
+    <div class="reveal rounded-[24px] bg-surface border border-line p-[44px]" style="--d:.5s"><p class="font-display text-[54px] font-bold leading-[1.05] text-navy">Escala por perfis</p><p class="mt-[18px] font-body text-[31px] leading-[1.4] text-muted">Um único motor de agentes, com “playbooks” por ramo da Justiça e tipo de ação.</p></div>
+    <div class="reveal rounded-[24px] bg-navy p-[44px] text-white" style="--d:.6s"><p class="font-display text-[54px] font-bold leading-[1.05] text-cyan">Dois públicos</p><p class="mt-[18px] font-body text-[31px] leading-[1.4] text-white/90">Tela para o cidadão e painel de indicadores para os tribunais.</p></div>
+  </div>
+</section>
+
+<!-- === SLIDE 9: IMPACTO (≈25s) — layout: custom (list + badges) === -->
+<section class="slide bg-deep text-white">
+  <div data-swoosh class="absolute top-0 left-0 w-[260px] h-[173px]"></div>
+  <h2 class="reveal absolute left-[330px] top-[70px] font-display text-[84px] font-extrabold leading-[1.02]">Impacto e alinhamento</h2>
+  <div class="absolute left-[96px] top-[270px] w-[520px] flex flex-col gap-[28px]">
+    <p class="reveal font-display text-[30px] font-semibold uppercase tracking-[0.2em] text-cyan">Agenda 2030 · ONU</p>
+    <div class="reveal flex items-center gap-[26px] rounded-[24px] bg-white p-[26px] text-ink" style="--d:.2s"><span class="flex h-[130px] w-[130px] shrink-0 items-center justify-center rounded-[18px] bg-[#00689d] font-display text-[64px] font-extrabold text-white">16</span><span class="font-display text-[38px] font-bold leading-[1.05] text-navy">Paz, Justiça e Instituições Eficazes</span></div>
+    <div class="reveal flex items-center gap-[26px] rounded-[24px] bg-white p-[26px] text-ink" style="--d:.35s"><span class="flex h-[130px] w-[130px] shrink-0 items-center justify-center rounded-[18px] bg-[#dd1367] font-display text-[64px] font-extrabold text-white">10</span><span class="font-display text-[38px] font-bold leading-[1.05] text-navy">Redução das Desigualdades</span></div>
+  </div>
+  <div class="absolute left-[720px] top-[270px] w-[1104px] flex flex-col gap-[24px]">
+    <div class="reveal-x rounded-[22px] border border-white/20 bg-white/8 p-[30px]" style="--d:.25s"><p class="font-body text-[22px] font-semibold uppercase tracking-[0.12em] text-cyan">Macrodesafio do Judiciário 2027–2032 · Resolução CNJ 692/2026</p><p class="mt-[8px] font-display text-[44px] font-bold leading-[1.1]">Comunicação institucional e combate à desinformação</p></div>
+    <div class="reveal-x rounded-[22px] border border-white/20 bg-white/8 p-[30px]" style="--d:.4s"><p class="font-body text-[22px] font-semibold uppercase tracking-[0.12em] text-cyan">Lei 15.263, de 14/11/2025</p><p class="mt-[8px] font-display text-[44px] font-bold leading-[1.1]">Política Nacional de Linguagem Simples</p></div>
+    <div class="reveal-x rounded-[22px] border border-white/20 bg-white/8 p-[30px]" style="--d:.55s"><p class="font-body text-[22px] font-semibold uppercase tracking-[0.12em] text-cyan">Resolução CNJ nº 615/2025</p><p class="mt-[8px] font-display text-[44px] font-bold leading-[1.1]">Uso, desenvolvimento e governança de IA no Judiciário</p></div>
+    <div class="reveal-x rounded-[22px] border border-white/20 bg-white/8 p-[30px]" style="--d:.7s"><p class="font-body text-[22px] font-semibold uppercase tracking-[0.12em] text-cyan">Acessibilidade</p><p class="mt-[8px] font-display text-[44px] font-bold leading-[1.1]">Libras, transcrição em áudio e ajuste do tamanho da fonte</p></div>
+  </div>
+</section>
+
+<!-- === SLIDE 10: PRÓXIMOS PASSOS (≈15s) — layout: custom (roadmap) === -->
+<section class="slide bg-surface text-ink">
+  <div data-swoosh class="absolute top-0 left-0 w-[260px] h-[173px]"></div>
+  <h2 class="reveal absolute left-[330px] top-[70px] font-display text-[84px] font-extrabold leading-[1.02] text-navy">Próximos passos</h2>
+  <div class="absolute left-[170px] right-[170px] top-[480px] h-[10px] rounded-full bg-line"></div>
+  <div class="grow absolute left-[170px] right-[170px] top-[480px] h-[10px] rounded-full bg-gradient-to-r from-leaf via-sun via-sky to-cyan" style="--d:.3s"></div>
+  <div class="absolute left-[170px] top-[430px] w-[1580px] grid grid-cols-4 gap-[40px]">
+    <div class="reveal" style="--d:0.5s"><span class="flex h-[110px] w-[110px] items-center justify-center rounded-full bg-leaf font-display text-[56px] font-extrabold text-white ring-[10px] ring-surface">1</span><p class="mt-[28px] font-display text-[46px] font-bold leading-[1.05] text-navy">Dados reais</p><p class="mt-[10px] font-body text-[27px] leading-[1.4] text-muted">Integração com <b>DataJud</b>, <b>Codex</b> e <b>Gov.br</b>.</p></div>
+    <div class="reveal" style="--d:0.7s"><span class="flex h-[110px] w-[110px] items-center justify-center rounded-full bg-sun font-display text-[56px] font-extrabold text-deep ring-[10px] ring-surface">2</span><p class="mt-[28px] font-display text-[46px] font-bold leading-[1.05] text-navy">Agentes de IA</p><p class="mt-[10px] font-body text-[27px] leading-[1.4] text-muted">Implementação dos agentes <b>simplificador</b> e <b>revisor</b>.</p></div>
+    <div class="reveal" style="--d:0.9s"><span class="flex h-[110px] w-[110px] items-center justify-center rounded-full bg-sky font-display text-[56px] font-extrabold text-white ring-[10px] ring-surface">3</span><p class="mt-[28px] font-display text-[46px] font-bold leading-[1.05] text-navy">Avisos</p><p class="mt-[10px] font-body text-[27px] leading-[1.4] text-muted">Notificação de movimentação por <b>WhatsApp</b> e <b>e-mail</b>.</p></div>
+    <div class="reveal" style="--d:1.1s"><span class="flex h-[110px] w-[110px] items-center justify-center rounded-full bg-cyan font-display text-[56px] font-extrabold text-deep ring-[10px] ring-surface">4</span><p class="mt-[28px] font-display text-[46px] font-bold leading-[1.05] text-navy">Mais alcance</p><ul class="mt-[10px] font-body text-[27px] leading-[1.4] text-muted list-disc pl-[28px]"><li>Publicação no <b>Jus.br</b>.</li><li class="mt-[8px]">Divulgação nos portais institucionais dos Tribunais e em plataformas digitais.</li></ul></div>
+  </div>
+</section>
+
+<!-- === SLIDE 11: ENCERRAMENTO (≈10s) — layout: custom (closing) === -->
+<section class="slide bg-deep text-white">
+  <div data-swoosh class="absolute top-0 left-0 w-[620px] h-[413px]"></div>
+  <div class="absolute left-[-200px] bottom-[-340px] w-[1000px] h-[1000px] rounded-full bg-[radial-gradient(circle,rgba(33,163,202,0.3),rgba(33,163,202,0)_65%)]"></div>
+  <div class="absolute right-[140px] top-[250px] w-[1100px] text-right">
+    <img class="reveal ml-auto w-[620px] h-auto" style="--d:.1s" src="assets/explica-ai-branco.svg" alt="Explica.AI">
+    <h2 class="reveal mt-[50px] font-display text-[128px] font-extrabold leading-[0.98]" style="--d:.3s">Justiça que se entende é Justiça <span class="text-cyan">que se acessa.</span></h2>
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- === CONTROLES (fora do palco) === -->
+<div class="deck-controls flex items-center gap-[16px] rounded-full bg-black/40 px-[18px] py-[8px] font-body text-[14px] text-white/80 backdrop-blur">
+  <span id="counter">1 / 11</span><div class="h-[4px] w-[160px] overflow-hidden rounded-full bg-white/20"><div id="bar" class="h-full w-0 bg-cyan transition-all duration-300"></div></div>
+</div>
+<div class="edit-hotzone fixed top-0 left-0 w-[80px] h-[80px] z-[10000] cursor-pointer"></div>
+<button id="editToggle" title="Editar texto (E)" class="edit-toggle fixed top-[16px] left-[16px] z-[10001] opacity-0 pointer-events-none transition-opacity duration-300 rounded-full bg-black/50 px-[12px] py-[6px] text-white">✏️</button>
+
+<script>
+/* === ONDAS DA BANDEIRA (mesmo motivo do cabeçalho do protótipo) === */
+document.querySelectorAll('[data-swoosh]').forEach(el => {
+  el.innerHTML = '<svg viewBox="0 0 96 64" preserveAspectRatio="none" class="h-full w-full" aria-hidden="true"><path d="M0 0H96C62 4 28 22 0 64Z" fill="#2f7fd8"/><path d="M0 0H66C42 6 18 22 0 46Z" fill="#f2c230"/><path d="M0 0H38C22 5 9 14 0 26Z" fill="#2e9e52"/></svg>';
+});
+
+/* === CONTROLADOR === */
+class SlidePresentation {
+  constructor() {
+    this.slides = [...document.querySelectorAll('.slide')];
+    this.stage = document.getElementById('deckStage');
+    this.i = 0;
+    const scale = () => {
+      const f = Math.min(innerWidth / 1920, innerHeight / 1080);
+      this.stage.style.transform = `translate(${(innerWidth - 1920 * f) / 2}px, ${(innerHeight - 1080 * f) / 2}px) scale(${f})`;
+    };
+    scale(); addEventListener('resize', scale);
+    document.addEventListener('keydown', e => {
+      if (e.target.isContentEditable) return;
+      if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); this.go(this.i + 1); }
+      if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); this.go(this.i - 1); }
+      if (e.key === 'Home') this.go(0);
+      if (e.key === 'End') this.go(this.slides.length - 1);
+    });
+    let x0 = null;
+    document.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+    document.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) this.go(this.i + (dx < 0 ? 1 : -1)); x0 = null; });
+    let lock = false;
+    document.addEventListener('wheel', e => { if (lock || Math.abs(e.deltaY) < 20) return; lock = true; setTimeout(() => lock = false, 600); this.go(this.i + (e.deltaY > 0 ? 1 : -1)); }, { passive: true });
+    const h = +location.hash.slice(1); this.go(h ? h - 1 : 0);
+  }
+  go(n) {
+    this.i = Math.max(0, Math.min(n, this.slides.length - 1));
+    this.slides.forEach((s, k) => { s.classList.toggle('active', k === this.i); s.classList.toggle('visible', k === this.i); });
+    document.getElementById('counter').textContent = `${this.i + 1} / ${this.slides.length}`;
+    document.getElementById('bar').style.width = `${((this.i + 1) / this.slides.length) * 100}%`;
+    history.replaceState(null, '', '#' + (this.i + 1));
+  }
+}
+new SlidePresentation();
+
+/* === EDIÇÃO NO NAVEGADOR (E para alternar; Ctrl+S salva o HTML) === */
+const editor = { isActive: false, toggleEditMode() {
+  this.isActive = !this.isActive;
+  document.getElementById('editToggle').classList.toggle('active', this.isActive);
+  document.querySelectorAll('.slide h1,.slide h2,.slide p,.slide li span,.slide b').forEach(el => el.contentEditable = this.isActive);
+} };
+const hotzone = document.querySelector('.edit-hotzone'), editToggle = document.getElementById('editToggle');
+let hideTimeout = null;
+const scheduleHide = () => { hideTimeout = setTimeout(() => { if (!editor.isActive) editToggle.classList.remove('show'); }, 400); };
+editToggle.addEventListener('click', () => editor.toggleEditMode());
+hotzone.addEventListener('mouseenter', () => { clearTimeout(hideTimeout); editToggle.classList.add('show'); });
+hotzone.addEventListener('mouseleave', scheduleHide);
+editToggle.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+editToggle.addEventListener('mouseleave', scheduleHide);
+hotzone.addEventListener('click', () => editor.toggleEditMode());
+document.addEventListener('keydown', e => {
+  if ((e.key === 'e' || e.key === 'E') && !e.target.isContentEditable) editor.toggleEditMode();
+  if ((e.ctrlKey || e.metaKey) && e.key === 's' && editor.isActive) {
+    e.preventDefault();
+    editor.toggleEditMode();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], { type: 'text/html' }));
+    a.download = 'apresentacao.html'; a.click();
+  }
+});
+</script>
+</body>
+</html>
