@@ -1,8 +1,8 @@
 import { BrandLockup, BrandSwoosh } from "@/components/brand";
 import { GovBrMark } from "@/components/govbr-mark";
+import { LoginLink } from "@/components/login-link";
 import { PrototypeBadge } from "@/components/prototype-badge";
 import { BookOpenText, Info, ListChecks, Volume2 } from "lucide-react";
-import Link from "next/link";
 
 const features = [
   { icon: BookOpenText, title: "Linguagem simples", text: "Saiba o que foi decidido, sem palavras difíceis." },
@@ -48,14 +48,13 @@ export default function LoginPage() {
             Use sua conta para ver as decisões dos seus processos.
           </p>
 
-          <Link
-            href="/processos"
+          <LoginLink
             className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-brand px-6 text-base font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-brand-strong hover:shadow-md sm:mt-6"
           >
             Entrar com
             <GovBrMark />
             <span className="sr-only">gov.br</span>
-          </Link>
+          </LoginLink>
 
           <div className="mt-3 flex gap-2.5 rounded-lg border border-warn-border bg-warn-soft px-3 py-2.5 text-sm leading-snug sm:mt-5 sm:px-4 sm:py-3 sm:leading-relaxed">
             <Info className="mt-0.5 size-4.5 shrink-0 text-warn" aria-hidden="true" />

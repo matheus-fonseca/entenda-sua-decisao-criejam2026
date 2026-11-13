@@ -5,6 +5,7 @@ import { FeedbackWidget } from "@/components/feedback-widget";
 import { HumanSupportModal } from "@/components/human-support-modal";
 import { NewerDecisionNotice } from "@/components/newer-decision-notice";
 import { ProcessMetadata } from "@/components/process-metadata";
+import { ProcessNotificationsButton } from "@/components/process-notifications-button";
 import { ProcessTimeline } from "@/components/process-timeline";
 import { PrototypeBadge } from "@/components/prototype-badge";
 import {
@@ -111,10 +112,13 @@ export function ProcessDecisionView({ process, decision }: ProcessDecisionViewPr
     <main id="conteudo" className="flex-1">
       <div className="mx-auto flex w-full max-w-[68rem] flex-col gap-5 px-4 py-5 sm:px-8 sm:py-7">
         <div>
-          <Link href="/processos" className={`${linkStyle} no-underline hover:underline`}>
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            Voltar
-          </Link>
+          <div className="flex items-center justify-between gap-3">
+            <Link href="/processos" className={`${linkStyle} no-underline hover:underline`}>
+              <ArrowLeft className="size-4" aria-hidden="true" />
+              Voltar
+            </Link>
+            <ProcessNotificationsButton processId={process.id} />
+          </div>
           {/* Quebra de linha natural: botões à direita do título quando cabem, abaixo quando não. */}
           <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-4">
