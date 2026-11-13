@@ -59,7 +59,7 @@ Os indicadores respondem a quatro perguntas, separando o que o cidadão sente do
 
 ## Splash após o login
 
-Ao clicar em "Entrar com gov.br", `/processos` mostra um splash de 10 s simulando a IA processando os processos (progresso, etapas e um item por processo). Ele aparece em todo login; recarregar a página sem passar pelo login abre direto. A marca fica em `entenda:login-pendente` (`localStorage`) e é apagada ao fim do splash.
+Ao clicar em "Entrar com gov.br", `/processos` mostra um splash de 5 s simulando a IA processando os processos (progresso, etapas e um item por processo). Ele aparece em todo login; recarregar a página sem passar pelo login abre direto. A marca fica em `entenda:login-pendente` (`localStorage`) e é apagada ao fim do splash.
 
 ## Avisos por WhatsApp e e-mail
 

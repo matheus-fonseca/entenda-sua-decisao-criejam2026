@@ -7,7 +7,7 @@ import { LOGIN_PENDING_KEY } from "@/lib/login-flag";
 import { cn } from "@/lib/utils";
 
 /** Duração simulada do primeiro processamento por IA. */
-const PROCESSING_MS = 10000;
+const PROCESSING_MS = 5000;
 const TICK_MS = 100;
 
 const subscribeNoop = () => () => {};
@@ -26,7 +26,7 @@ interface FirstAccessGateProps {
 }
 
 /**
- * Após cada login mostra um splash simulando a interpretação dos processos por IA (10 s).
+ * Após cada login mostra um splash simulando a interpretação dos processos por IA (5 s).
  * Sem login pendente (ex.: recarregar a página), abre direto.
  */
 export function FirstAccessGate({ processTitles, children }: FirstAccessGateProps) {
