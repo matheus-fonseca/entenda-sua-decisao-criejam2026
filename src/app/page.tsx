@@ -1,6 +1,7 @@
 import { BrandLockup, BrandSwoosh } from "@/components/brand";
+import { GovBrMark } from "@/components/govbr-mark";
 import { PrototypeBadge } from "@/components/prototype-badge";
-import { BookOpenText, Info, ListChecks, LogIn, Volume2 } from "lucide-react";
+import { BookOpenText, Info, ListChecks, Volume2 } from "lucide-react";
 import Link from "next/link";
 
 const features = [
@@ -19,65 +20,83 @@ export default function LoginPage() {
         </div>
       </header>
 
-      <main id="conteudo" className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16 lg:py-16">
-        <section aria-labelledby="titulo-app">
-          <h1 id="titulo-app" className="font-heading text-[2.1rem] leading-tight font-bold text-brand-strong sm:text-[2.6rem]">
+      {/* No celular: apresentação curta → login → recursos, tudo sem rolagem. No desktop: duas colunas. */}
+      <main
+        id="conteudo"
+        className="mx-auto grid w-full max-w-6xl flex-1 content-center gap-4 px-4 py-5 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-x-16 lg:gap-y-8 lg:py-16"
+      >
+        <section aria-labelledby="titulo-app" className="lg:col-start-1 lg:row-start-1 lg:self-end">
+          <h1
+            id="titulo-app"
+            className="font-heading text-[1.75rem] leading-tight font-bold text-brand-strong sm:text-[2.6rem]"
+          >
             Entenda a Decisão
           </h1>
-          <p className="mt-3 max-w-xl text-lg leading-relaxed text-foreground/85">
-            Explicações de sentenças e acórdãos em linguagem simples, para você saber o que foi decidido no seu
-            processo.
+          <p className="mt-1.5 max-w-xl text-base leading-relaxed text-foreground/85 sm:mt-3 sm:text-lg">
+            Saiba, em linguagem simples, o que foi decidido no seu processo.
           </p>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
-            {features.map(({ icon: Icon, title, text }) => (
-              <li key={title} className="flex gap-3 rounded-xl border border-border bg-white p-4 shadow-xs">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand-soft text-brand">
-                  <Icon className="size-5" aria-hidden="true" />
-                </span>
-                <span>
-                  <span className="font-heading block text-[1.05rem] font-bold">{title}</span>
-                  <span className="text-sm text-muted-foreground">{text}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
         </section>
 
         <section
           aria-labelledby="titulo-acesso"
-          className="rounded-2xl border border-border bg-white p-6 shadow-md shadow-navy/5 sm:p-8"
+          className="rounded-2xl border border-border bg-white p-5 shadow-md shadow-navy/5 sm:p-8 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center"
         >
-          <h2 id="titulo-acesso" className="font-heading text-2xl font-bold text-foreground">
+          <h2 id="titulo-acesso" className="font-heading text-xl font-bold text-foreground sm:text-2xl">
             Acesse seus processos
           </h2>
-          <p className="mt-2 text-[0.98rem] leading-relaxed text-muted-foreground">
-            Use sua conta para ver as decisões dos processos em que você é parte.
+          <p className="mt-1 hidden text-[0.95rem] leading-snug text-muted-foreground sm:mt-2 sm:block sm:leading-relaxed">
+            Use sua conta para ver as decisões dos seus processos.
           </p>
 
           <Link
             href="/processos"
-            className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-brand px-6 text-base font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-brand-strong hover:shadow-md"
+            className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-full bg-brand px-6 text-base font-semibold text-white shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-brand-strong hover:shadow-md sm:mt-6"
           >
-            <LogIn className="size-5" aria-hidden="true" />
-            Entrar com Gov.br (demonstração)
+            Entrar com
+            <GovBrMark />
+            <span className="sr-only">gov.br</span>
           </Link>
 
-          <div className="mt-5 flex gap-3 rounded-lg border border-warn-border bg-warn-soft px-4 py-3 text-sm leading-relaxed">
+          <div className="mt-3 flex gap-2.5 rounded-lg border border-warn-border bg-warn-soft px-3 py-2.5 text-sm leading-snug sm:mt-5 sm:px-4 sm:py-3 sm:leading-relaxed">
             <Info className="mt-0.5 size-4.5 shrink-0 text-warn" aria-hidden="true" />
             <p>
-              <strong>Ambiente de demonstração.</strong> Nenhum login real é feito e nenhuma conta Gov.br é
-              acessada. Todos os nomes, processos e documentos são fictícios.
+              <strong>Demonstração.</strong> Nenhum login real é feito no gov.br. Todos os dados são fictícios.
             </p>
           </div>
 
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 hidden justify-center sm:flex">
             <PrototypeBadge />
           </div>
         </section>
+
+        <ul
+          aria-label="O que você encontra"
+          className="grid grid-cols-3 gap-2 sm:gap-4 lg:col-start-1 lg:row-start-2 lg:grid-cols-1 lg:self-start max-sm:[@media(max-height:620px)]:hidden"
+        >
+          {features.map(({ icon: Icon, title, text }) => (
+            <li
+              key={title}
+              className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-white p-2.5 text-center shadow-xs sm:flex-row sm:items-start sm:gap-3 sm:p-4 sm:text-left"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-soft text-brand sm:size-10">
+                <Icon className="size-5" aria-hidden="true" />
+              </span>
+              <span>
+                <span className="font-heading block text-[0.95rem] leading-tight font-bold sm:text-[1.05rem]">
+                  {title}
+                </span>
+                <span className="hidden text-sm text-muted-foreground sm:block">{text}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
       </main>
 
-      <footer className="border-t border-border px-4 py-4 text-center text-xs text-muted-foreground">
-        Protótipo de oficina de inovação do Poder Judiciário. Não é um sistema oficial.
+      <footer className="border-t border-border px-4 py-3 text-center text-xs text-muted-foreground sm:py-4">
+        <span className="sm:hidden">Protótipo ilustrativo. Não é um sistema oficial.</span>
+        <span className="hidden sm:inline">
+          Protótipo de oficina de inovação do Poder Judiciário. Não é um sistema oficial.
+        </span>
       </footer>
     </div>
   );
