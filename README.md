@@ -2,7 +2,7 @@
 
 Protótipo web navegável, criado para uma oficina de inovação do Poder Judiciário. Ele explica sentenças e acórdãos em linguagem simples para quem não conhece termos jurídicos. A integração com Jus.br / Minha Justiça / CNJ é apenas conceitual.
 
-> **Todos os dados são fictícios.** Não há autenticação real nem backend. Também não há integração com Gov.br, DataJud, Codex ou Balcão Virtual.
+> **Todos os dados são fictícios.** Não há autenticação real nem backend. Também não há integração com Gov.br, DataJud, Codex ou Balcão Virtual. A única chamada externa é o widget VLibras (tradução para Libras), carregado de `vlibras.gov.br`.
 
 ## Como executar
 
@@ -33,7 +33,7 @@ A ordem segue o roteiro da demonstração: do caso mais simples ao mais complexo
 
 | # | Processo (título na lista) | Decisões | Situação atual | O que mostra |
 | --- | --- | --- | --- | --- |
-| 1 | `rescisao-trabalhista` (TRT2) — Rescisão do contrato | Sentença: verbas rescisórias aceitas, dano moral negado (verde) | Sentença publicada, ainda cabe recurso | Entender uma decisão: resultado, motivo, próximo passo, ouvir/avatar |
+| 1 | `rescisao-trabalhista` (TRT2) — Rescisão do contrato | Sentença: verbas rescisórias aceitas, dano moral negado (verde) | Sentença publicada, ainda cabe recurso | Entender uma decisão: resultado, motivo, próximo passo, ouvir/Libras |
 | 2 | `reclamacao-trabalhista` (TRT10) — Horas extras | Sentença: horas extras negadas (cinza). Acórdão: recurso aceito em parte (verde) | Acórdão publicado | O resultado mudou: navegar entre as duas decisões |
 | 3 | `beneficio-previdenciario` (TRF1) — Benefício do INSS | Sentença parcialmente favorável (verde) | Pedido de esclarecimento (embargos de declaração) em análise | Etapa intermediária: o resultado ainda pode mudar |
 | 4 | `acao-civel` (TJPE) — Atraso na entrega do imóvel | Sentença aceita em parte (verde). Acórdão com interpretação insegura (âmbar, sem síntese) | Acórdão publicado, sem explicação segura | Saber quando não explicar e encaminhar ao atendimento |
@@ -71,7 +71,7 @@ vercel --prod     # publica em produção
 src/
   app/                         rotas (App Router)
   components/
-    app-header.tsx             AppHeader (identidade + controles de fonte/acessibilidade)
+    app-header.tsx             AppHeader (identidade + botão Libras + controles de fonte/acessibilidade)
     process-sidebar.tsx        ProcessSidebar, ProcessList (busca) e MobileProcessNav (painel recolhível)
     process-metadata.tsx       ProcessMetadata
     process-decision-view.tsx  Tela de explicação de uma decisão (usada pelas duas rotas)
@@ -79,8 +79,10 @@ src/
     newer-decision-notice.tsx  Aviso de decisão mais recente
     decision-summary.tsx       DecisionSummary (cinza / verde / âmbar)
     explanation-section.tsx    ExplanationSection (accordions abertos por padrão)
-    accessibility-controls.tsx AccessibilityControls (SpeechSynthesis + avatar)
-    avatar-demo-modal.tsx      Demonstração do avatar (identificada como demonstração)
+    accessibility-controls.tsx AccessibilityControls (SpeechSynthesis + botão Ver em Libras)
+    libras-button.tsx          LibrasButton (aciona o botão flutuante do VLibras)
+    libras-icon.tsx            LibrasIcon (ícone de língua de sinais)
+    vlibras-widget.tsx         VLibrasWidget (carrega e inicia o VLibras, montado no layout raiz)
     feedback-widget.tsx        FeedbackWidget (localStorage)
     human-support-modal.tsx    HumanSupportModal (Balcão Virtual, sem integração)
     ui/                        componentes shadcn/ui
@@ -102,12 +104,13 @@ Para trocar os dados por uma API, basta reimplementar as funções de `src/lib/p
 - **Cenário cível:** é o caso em que a IA ficou ambígua. O acórdão é inseguro e não traz nenhuma síntese do resultado. A tela orienta a ler o documento original e a procurar atendimento humano.
 - **Timeline:** as etapas futuras aparecem tracejadas e indicadas como possibilidades ("podem não acontecer"). A timeline fica horizontal a partir de 1280 px. Abaixo disso, fica vertical para não apertar até 7 etapas nem causar rolagem horizontal.
 - **Áudio:** usa `SpeechSynthesisUtterance` em pt-BR, falando frase por frase. Um único botão alterna entre "Ouvir" e "Parar". Se o navegador não tiver suporte ou nenhuma voz começar em 4 s, aparece uma mensagem.
-- **Avatar:** abre um modal marcado "Demonstração · sem vídeo real", com ilustração estática e o texto que seria apresentado.
+- **Libras:** usa o widget oficial VLibras (Governo Federal), que traduz o texto da página para Libras com um avatar 3D. É a única dependência externa do protótipo: o script vem de `vlibras.gov.br` e o texto da página é enviado ao serviço para tradução (sem problema aqui, porque os dados são fictícios). O widget é montado no layout raiz, então aparece em todas as telas. Os botões "Ver em Libras" (tela de explicação) e "Libras" (cabeçalho) acionam o botão flutuante do VLibras. Quando o widget abre, nenhum texto fica na tela. Se ele não carregar, aparece um aviso que indica o Balcão Virtual para pedir intérprete. A tradução é automática, pode errar termos jurídicos e não substitui a decisão original nem um intérprete.
 - **Avaliação:** o voto fica no `localStorage` por decisão (`entenda:feedback:<processo>-<decisão>`), pode ser alterado ou desfeito e aparece com uma confirmação discreta.
+- **Cabeçalho:** o botão "Libras" fica ao lado dos controles e mostra só o ícone em telas pequenas.
 - **Botão de acessibilidade do cabeçalho:** abre atalhos ("Ir para o conteúdo", "Ir para Meus processos") e controles de tamanho do texto. A+ / A / A- também ficam visíveis no desktop.
 - **Logotipos:** a identidade é reconstruída com texto e faixas decorativas em SVG. Não usamos logotipos oficiais.
 - Sem vermelho para resultados desfavoráveis, sem cálculo de prazos e sem recomendação jurídica.
 
 ## Acessibilidade
 
-HTML semântico, link "Pular para o conteúdo", foco visível em toda a interface e `aria-current` no processo e na etapa atuais. Há regiões `aria-live` para busca, áudio e avaliação. Os diálogos são acessíveis via Radix, e animações são reduzidas com `prefers-reduced-motion`. O layout foi verificado em 1440 px e 390 px, sem overflow horizontal.
+HTML semântico, link "Pular para o conteúdo", foco visível em toda a interface e `aria-current` no processo e na etapa atuais. Há regiões `aria-live` para busca, áudio, Libras e avaliação. O recurso de Libras (VLibras) está disponível em todas as telas, além da leitura em voz alta, do ajuste de tamanho do texto e do atendimento humano. Os diálogos são acessíveis via Radix, e animações são reduzidas com `prefers-reduced-motion`. O layout foi verificado em 1440 px e 390 px, sem overflow horizontal.
